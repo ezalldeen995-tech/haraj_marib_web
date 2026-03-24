@@ -1,0 +1,95 @@
+{
+  "info": {
+    "_postman_id": "b1e1c1e0-0000-0000-0000-000000000001",
+    "name": "Haraj Maareb API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API documentation for Haraj Maareb marketplace."
+  },
+  "variable": [
+    { "key": "url", "value": "http://localhost:8000" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"771234567\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{url}}/api/register", "host": [ "{{url}}" ], "path": [ "api", "register" ] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"771234567\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{url}}/api/login", "host": [ "{{url}}" ], "path": [ "api", "login" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ads",
+      "item": [
+        {
+          "name": "Get Ads",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{url}}/api/ads", "host": [ "{{url}}" ], "path": [ "api", "ads" ] }
+          }
+        },
+        {
+          "name": "Create Ad",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "multipart/form-data" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "Sample Ad", "type": "text" },
+                { "key": "description", "value": "Ad description", "type": "text" },
+                { "key": "price", "value": "1000", "type": "text" },
+                { "key": "category_id", "value": "1", "type": "text" },
+                { "key": "images", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{url}}/api/ads", "host": [ "{{url}}" ], "path": [ "api", "ads" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversation_id\": 1,\n  \"content\": \"Hello!\"\n}"
+            },
+            "url": { "raw": "{{url}}/api/chat/send", "host": [ "{{url}}" ], "path": [ "api", "chat", "send" ] }
+          }
+        }
+      ]
+    }
+  ]
+}

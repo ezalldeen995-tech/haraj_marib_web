@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="إدارة حسابك الشخصي في حراج مأرب - تعديل البيانات والصورة الشخصية.">
+    <title>حسابي - حراج مأرب</title>
+
+    <!-- Bootstrap 5 RTL CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/web/index.html">
+                <i class="bi bi-shop"></i> حراج مأرب
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/index.html"><i class="bi bi-house-door me-1"></i> الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/ads.html"><i class="bi bi-megaphone me-1"></i> الإعلانات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/contact.html"><i class="bi bi-telephone me-1"></i> تواصل معنا</a>
+                    </li>
+                </ul>
+                <div id="navAuthArea"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- PROFILE PAGE -->
+    <!-- ============================================ -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- SIDEBAR -->
+                <div class="col-lg-3">
+                    <div class="profile-sidebar">
+                        <div class="profile-sidebar-header">
+                            <div class="profile-sidebar-avatar" id="sidebarAvatar">
+                                <img src="https://placehold.co/80x80/FFEDD5/F97316?text=👤" alt="صورة شخصية"
+                                    id="sidebarAvatarImg">
+                            </div>
+                            <h6 class="mt-2 mb-0 fw-bold" id="sidebarName">جاري التحميل...</h6>
+                        </div>
+                        <nav class="profile-nav">
+                            <a href="#section-edit" class="profile-nav-link active" data-section="section-edit">
+                                <i class="bi bi-person-gear"></i> تعديل البيانات
+                            </a>
+                            <a href="#section-favorites" class="profile-nav-link" data-section="section-favorites">
+                                <i class="bi bi-heart"></i> الإعلانات المفضلة
+                            </a>
+                            <a href="#section-myads" class="profile-nav-link" data-section="section-myads">
+                                <i class="bi bi-megaphone"></i> إعلاناتي
+                            </a>
+                            <hr class="my-2">
+                            <a href="#section-danger" class="profile-nav-link text-danger"
+                                data-section="section-danger">
+                                <i class="bi bi-trash3"></i> حذف الحساب
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- MAIN CONTENT -->
+                <div class="col-lg-9">
+
+                    <!-- Alert Container -->
+                    <div id="alertContainer"></div>
+
+                    <!-- ======= AVATAR & HEADER CARD ======= -->
+                    <div class="profile-header-card" id="section-edit">
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-wrapper">
+                                <img src="https://placehold.co/120x120/FFEDD5/F97316?text=👤" alt="صورة شخصية"
+                                    id="profileAvatar" class="profile-avatar-img">
+                                <div class="profile-avatar-overlay" id="avatarOverlay">
+                                    <i class="bi bi-camera-fill"></i>
+                                </div>
+                                <div class="profile-avatar-spinner d-none" id="avatarSpinner">
+                                    <div class="spinner-border text-white" role="status">
+                                        <span class="visually-hidden">جاري الرفع...</span>
+                                    </div>
+                                </div>
+                                <input type="file" class="d-none" id="avatarInput"
+                                    accept="image/jpeg,image/png,image/jpg">
+                            </div>
+                            <div class="profile-user-info">
+                                <h3 class="fw-bold mb-1" id="profileName">جاري التحميل...</h3>
+                                <p class="text-muted mb-1" id="profilePhone"><i class="bi bi-telephone me-1"></i> ---
+                                </p>
+                                <div class="d-flex gap-3 profile-stats">
+                                    <div class="profile-stat">
+                                        <span class="profile-stat-num" id="profileAdsCount">0</span>
+                                        <span class="profile-stat-label">إعلان نشط</span>
+                                    </div>
+                                    <div class="profile-stat">
+                                        <span class="profile-stat-num" id="profileRating">0</span>
+                                        <span class="profile-stat-label">التقييم</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ======= EDIT FORM ======= -->
+                    <div class="profile-card mt-3">
+                        <h5 class="profile-card-title">
+                            <i class="bi bi-pencil-square me-1"></i> تعديل البيانات الشخصية
+                        </h5>
+
+                        <form id="editProfileForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editName" class="form-label fw-semibold">
+                                        <i class="bi bi-person me-1"></i> الاسم الكامل
+                                    </label>
+                                    <input type="text" class="form-control" id="editName" placeholder="أدخل اسمك">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editEmail" class="form-label fw-semibold">
+                                        <i class="bi bi-envelope me-1"></i> البريد الإلكتروني
+                                    </label>
+                                    <input type="email" class="form-control" id="editEmail"
+                                        placeholder="email@example.com">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary" id="btnSaveProfile">
+                                    <i class="bi bi-check2-circle me-1"></i> حفظ التغييرات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ======= FAVORITES SECTION ======= -->
+                    <div class="profile-card mt-3" id="section-favorites">
+                        <h5 class="profile-card-title">
+                            <i class="bi bi-heart me-1"></i> الإعلانات المفضلة
+                        </h5>
+                        <div id="favoritesGrid" class="row g-3">
+                            <div class="col-12 text-center py-4">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="text-muted mt-2">جاري تحميل المفضلة...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ======= MY ADS SECTION ======= -->
+                    <div class="profile-card mt-3" id="section-myads">
+                        <h5 class="profile-card-title">
+                            <i class="bi bi-megaphone me-1"></i> إعلاناتي
+                        </h5>
+                        <div id="myAdsGrid" class="row g-3">
+                            <div class="col-12 text-center py-4">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="text-muted mt-2">جاري تحميل إعلاناتك...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ======= DANGER ZONE ======= -->
+                    <div class="profile-danger-zone mt-3" id="section-danger">
+                        <h5 class="fw-bold text-danger mb-2">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> منطقة الخطر
+                        </h5>
+                        <p class="text-muted mb-3">
+                            حذف حسابك نهائي ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك وإعلاناتك ومحادثاتك.
+                        </p>
+                        <button class="btn btn-outline-danger" id="btnDeleteAccount" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="bi bi-trash3 me-1"></i> حذف حسابي نهائياً
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- DELETE ACCOUNT MODAL -->
+    <!-- ============================================ -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> تأكيد حذف الحساب
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <div
+                            style="width:70px; height:70px; border-radius:50%; background:#FEE2E2; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                            <i class="bi bi-person-x-fill" style="font-size:2rem; color:#DC2626;"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted text-center">
+                        هذا الإجراء <strong class="text-danger">نهائي</strong> ولا يمكن التراجع عنه.
+                        <br>للتأكيد، اكتب <strong class="text-danger">DELETE</strong> في الحقل أدناه.
+                    </p>
+                    <input type="text" class="form-control text-center" id="deleteConfirmInput"
+                        placeholder='اكتب DELETE هنا' autocomplete="off">
+                </div>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete" disabled>
+                        <i class="bi bi-trash3 me-1"></i> حذف حسابي
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="footer-brand"><i class="bi bi-shop me-1"></i> حراج مأرب</div>
+                    <p>سوقك المفتوح في اليمن - للبيع والشراء بأمان وسهولة.</p>
+                </div>
+                <div class="col-md-6 text-md-start">
+                    <div class="footer-links mt-3 mt-md-0">
+                        <a href="/web/index.html">الرئيسية</a>
+                        <a href="/web/ads.html">الإعلانات</a>
+                        <a href="#">تواصل معنا</a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <p class="copyright text-center mb-0">© 2026 حراج مأرب. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+
+</html>

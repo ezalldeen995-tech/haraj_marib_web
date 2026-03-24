@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haraj Maareb — API Documentation</title>
+  <meta name="description" content="Complete API documentation for Haraj Maareb platform with interactive testing">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* JSON syntax highlight colors */
+    .json-key {
+      color: #79c0ff;
+    }
+
+    .json-string {
+      color: #a5d6ff;
+    }
+
+    .json-num {
+      color: #d2a8ff;
+    }
+
+    .json-bool {
+      color: #ff7b72;
+    }
+
+    .json-null {
+      color: #ffa657;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile Toggle -->
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1><span class="icon">📋</span> Haraj Maareb API</h1>
+      <p>v1.0 — Interactive Documentation</p>
+    </div>
+    <div class="sidebar-search">
+      <input type="text" id="search-input" placeholder="🔍  Search endpoints...">
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content"></main>
+
+  <!-- Test Dialog Overlay -->
+  <div class="dialog-overlay" id="dialog-overlay">
+    <div class="dialog" id="dialog">
+      <div class="dialog-header">
+        <h3 id="dialog-header-title"></h3>
+        <button class="dialog-close" onclick="closeTestDialog()">✕</button>
+      </div>
+      <div class="dialog-body" id="dialog-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="endpoints.js"></script>
+  <script src="test-config.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

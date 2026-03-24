@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تسجيل الدخول إلى حراج مأرب - سوقك المفتوح للبيع والشراء في اليمن.">
+    <title>تسجيل الدخول - حراج مأرب</title>
+
+    <!-- Bootstrap 5 RTL CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- LOGIN PAGE -->
+    <!-- ============================================ -->
+    <div class="auth-page">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="text-center">
+                <a href="/web/index.html" class="auth-logo d-inline-block mb-2" style="text-decoration: none;">
+                    <i class="bi bi-shop me-1"></i> حراج مأرب
+                </a>
+                <p class="auth-subtitle">قم بتسجيل الدخول للوصول إلى حسابك</p>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Login Form -->
+            <!-- API: POST /login - See auth.md Section 2 -->
+            <form id="loginForm" novalidate>
+                <div class="mb-3">
+                    <label for="loginPhone" class="form-label">
+                        <i class="bi bi-phone me-1"></i> رقم الجوال
+                    </label>
+                    <input
+                        type="tel"
+                        class="form-control"
+                        id="loginPhone"
+                        placeholder="مثال: 771234567"
+                        required
+                        autocomplete="tel"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">
+                        <i class="bi bi-lock me-1"></i> كلمة المرور
+                    </label>
+                    <div class="position-relative">
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="loginPassword"
+                            placeholder="أدخل كلمة المرور"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button
+                            type="button"
+                            class="btn btn-link position-absolute top-50 start-0 translate-middle-y"
+                            style="color: var(--text-secondary); text-decoration: none; z-index: 5;"
+                            onclick="togglePassword('loginPassword', this)"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-left me-1"></i> دخول
+                </button>
+            </form>
+
+            <!-- Links -->
+            <div class="auth-links">
+                <p class="mb-2">
+                    <a href="#" id="forgotPasswordLink">نسيت كلمة المرور؟</a>
+                </p>
+                <p class="mb-0">
+                    ليس لديك حساب؟
+                    <a href="/web/register.html">إنشاء حساب جديد</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FORGOT PASSWORD MODAL -->
+    <!-- ============================================ -->
+    <div class="modal fade" id="forgotModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-key me-2" style="color: var(--primary);"></i>
+                        استعادة كلمة المرور
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <div id="alertContainer2"></div>
+
+                    <!-- Step 1: Enter Phone -->
+                    <div id="forgotStep">
+                        <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                            أدخل رقم جوالك وسنرسل لك كود التفعيل لإعادة تعيين كلمة المرور.
+                        </p>
+                        <!-- POST /password/forgot - auth.md Section 5 -->
+                        <form id="forgotForm">
+                            <div class="mb-3">
+                                <label for="forgotPhone" class="form-label">رقم الجوال</label>
+                                <input type="tel" class="form-control" id="forgotPhone" placeholder="771234567" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-send me-1"></i> إرسال كود التفعيل
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Reset Password -->
+                    <div id="resetStep" style="display: none;">
+                        <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                            أدخل كود التفعيل وكلمة المرور الجديدة.
+                        </p>
+                        <!-- POST /password/reset - auth.md Section 6 -->
+                        <form id="resetForm">
+                            <div class="mb-3">
+                                <label for="resetOtp" class="form-label">كود التفعيل</label>
+                                <input type="text" class="form-control text-center" id="resetOtp" placeholder="1234" maxlength="6" required style="letter-spacing: 8px; font-size: 1.2rem;">
+                            </div>
+                            <div class="mb-3">
+                                <label for="resetPassword" class="form-label">كلمة المرور الجديدة</label>
+                                <input type="password" class="form-control" id="resetPassword" placeholder="أدخل كلمة المرور الجديدة" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="resetPasswordConfirm" class="form-label">تأكيد كلمة المرور</label>
+                                <input type="password" class="form-control" id="resetPasswordConfirm" placeholder="أعد إدخال كلمة المرور" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-lg me-1"></i> تغيير كلمة المرور
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- App JS -->
+    <script src="js/app.js?v=3"></script>
+    <!-- Auth JS -->
+    <script src="js/auth.js?v=3"></script>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+
+        // Open forgot password modal
+        document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(document.getElementById('forgotModal'));
+            modal.show();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="الإشعارات في حراج مأرب - تابع كل جديد.">
+    <title>الإشعارات - حراج مأرب</title>
+
+    <!-- Bootstrap 5 RTL CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav class="navbar navbar-expand-lg bg-white mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/web/index.html">
+                <i class="bi bi-shop"></i> حراج مأرب
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/index.html"><i class="bi bi-house-door me-1"></i> الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/ads.html"><i class="bi bi-megaphone me-1"></i> الإعلانات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/chat.html"><i class="bi bi-chat-dots me-1"></i> المحادثات</a>
+                    </li>
+                </ul>
+                <div id="navAuthArea"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- NOTIFICATIONS PAGE -->
+    <!-- ============================================ -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+
+                    <div class="notifications-card card shadow-sm border-0" style="border-radius: 16px;">
+
+                        <!-- Header -->
+                        <div class="card-header bg-white p-4 pb-3 border-0 d-flex justify-content-between align-items-center"
+                            style="border-radius: 16px 16px 0 0;">
+                            <h4 class="fw-bold mb-0 text-primary">
+                                <i class="bi bi-bell me-2"></i> الإشعارات
+                            </h4>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="btnMarkAllRead">
+                                <i class="bi bi-check2-all me-1"></i> تحديد الكل كمقروء
+                            </button>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="px-4 pb-0">
+                            <ul class="nav nav-pills custom-pills mb-3" id="notificationTabs">
+                                <li class="nav-item">
+                                    <button class="nav-link active rounded-pill px-4" data-filter="all">الكل</button>
+                                </li>
+                                <li class="nav-item ms-2">
+                                    <button class="nav-link rounded-pill px-4" data-filter="unread">غير مقروء</button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- List -->
+                        <div class="list-group list-group-flush" id="notificationsList">
+                            <!-- Skeleton Loaders -->
+                            <div class="list-group-item p-4">
+                                <div class="d-flex w-100 align-items-center">
+                                    <div class="skeleton-circle me-3" style="width: 48px; height: 48px;"></div>
+                                    <div class="flex-grow-1">
+                                        <div class="skeleton-line w-50 mb-2"></div>
+                                        <div class="skeleton-line w-75"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item p-4">
+                                <div class="d-flex w-100 align-items-center">
+                                    <div class="skeleton-circle me-3" style="width: 48px; height: 48px;"></div>
+                                    <div class="flex-grow-1">
+                                        <div class="skeleton-line w-50 mb-2"></div>
+                                        <div class="skeleton-line w-75"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="card-footer bg-white p-3 border-0" style="border-radius: 0 0 16px 16px;">
+                            <div id="notificationsPagination"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js?v=3"></script>
+    <script src="js/notifications.js?v=3"></script>
+</body>
+
+</html>
