@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SettingsTableSeeder::class,
+            PermissionSeeder::class,
         ]);
 
         User::updateOrCreate(
