@@ -120,7 +120,7 @@ const ADS_PAGE = {
         if (result.success && result.data) {
             let ads = result.data.data || result.data;
             if (!Array.isArray(ads)) ads = [];
-            
+
             this.lastPage = result.data.last_page || 1;
             this.currentPage = result.data.current_page || 1;
 

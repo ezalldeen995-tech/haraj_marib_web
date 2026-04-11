@@ -24,7 +24,7 @@ class AdResource extends JsonResource
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'image_path' => $image->image_path,
+                    'image_path' => asset('storage/' . $image->image_path),
                 ];
             })->toArray(),
             'user' => new UserResource($this->user),

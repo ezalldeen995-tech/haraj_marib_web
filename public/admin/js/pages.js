@@ -172,6 +172,7 @@ async function toggleBlockUser(id) {
 
 // ==== ADS LOGIC ====
 let currentPageAds = 1;
+let currentAdsData = {};
 async function loadAds(page = 1) {
     currentPageAds = page;
     const statusFilter = document.getElementById('filter-status').value;
@@ -196,10 +197,13 @@ async function loadAds(page = 1) {
     // Safely fallback to Array if data is missing
     const ads = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
     
+    currentAdsData = {};
+
     if (ads.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No data found.</td></tr>';
     } else {
         ads.forEach(ad => {
+            currentAdsData[ad.id] = ad;
             const tr = document.createElement('tr');
             
             let statusBadge = '<span class="badge rounded-pill bg-success px-3 py-2">نشط</span>';
@@ -215,9 +219,20 @@ async function loadAds(page = 1) {
             // For now frontend force deletes
             actions += `<button class="btn btn-sm btn-danger btn-delete shadow-sm" data-id="${ad.id}"><i class="bi bi-trash" style="pointer-events: none;"></i> حذف</button>`;
 
+            let imgThumbnail = '<div class="text-muted text-center" style="font-size:0.8rem;">لا توجد صورة</div>';
+            if (ad.images && ad.images.length > 0) {
+                const imgPath = ad.images[0].image_path;
+                const storageBase = typeof BASE_URL !== 'undefined' ? BASE_URL.replace('/api/v1', '/storage') : '/storage';
+                const imgUrl = imgPath ? `${storageBase}/${imgPath}` : (ad.images[0].url || '');
+                if (imgUrl) {
+                    imgThumbnail = `<img src="${imgUrl}" alt="صورة" class="rounded border shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">`;
+                }
+            }
+
             tr.innerHTML = `
                 <td>#${ad.id}</td>
                 <td>${ad.title}</td>
+                <td class="text-center">${imgThumbnail}</td>
                 <td>${ad.user ? ad.user.name : 'Unknown User'}</td>
                 <td>${ad.category ? ad.category.name_en : 'N/A'}</td>
                 <td>${statusBadge}</td>
@@ -251,7 +266,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (targetBtn.classList.contains('btn-approve')) {
                 console.log('Approve clicked for ID:', id);
-                showConfirmModal('Approve Ad', 'Approve this ad?', async () => {
+                
+                const ad = currentAdsData[id];
+                const adTitle = ad?.title || 'غير معروف';
+                const publisherName = ad?.user?.name || 'غير معروف';
+                const adPrice = ad?.price ? ad.price + ' ' + (ad.currency || '') : 'غير محدد';
+                const adDesc = ad?.description || 'لا يوجد وصف';
+                
+                let detailsMsg = `
+                    <div class="text-end mb-3 p-3 bg-light rounded border" style="font-size: 0.95rem;">
+                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-1"></i> تفاصيل الإعلان:</h6>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">اسم الإعلان:</div>
+                            <div class="col-sm-8 fw-bold">${adTitle}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">الناشر:</div>
+                            <div class="col-sm-8 fw-bold">${publisherName}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">السعر:</div>
+                            <div class="col-sm-8 fw-bold text-success">${adPrice}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">الوصف:</div>
+                            <div class="col-sm-8" style="max-height: 80px; overflow-y: auto;">${adDesc}</div>
+                        </div>
+                `;
+                
+                if (ad?.images && ad?.images.length > 0) {
+                    const imgPath = ad.images[0].image_path;
+                    const storageBase = typeof BASE_URL !== 'undefined' ? BASE_URL.replace('/api/v1', '/storage') : '/storage';
+                    const imgUrl = imgPath ? `${storageBase}/${imgPath}` : (ad.images[0].url || '');
+                    if (imgUrl) {
+                        detailsMsg += `<div class="mt-3 text-center"><img src="${imgUrl}" alt="صورة المنتج" class="img-fluid rounded border shadow-sm" style="max-height: 160px; object-fit: cover;"></div>`;
+                    }
+                }
+                
+                detailsMsg += `</div><p class="mb-0 fs-6 fw-bold">هل أنت متأكد من قبول هذا الإعلان؟</p>`;
+
+                showConfirmModal('تأكيد قبول الإعلان', detailsMsg, async () => {
                     console.log('Sending Approve API Request for ID:', id);
                     const res = await apiRequest('POST', `/admin/ads/${id}/approve`);
                     if(res) { showToast('تمت الموافقة', 'success'); loadAds(currentPageAds); }
@@ -335,11 +389,12 @@ function viewReceipt(filename) {
         return;
     }
     // Storage link assumes public/storage/receipts/ or similar - adjust per backend config
-    img.src = `http://haraj-maareb.test/storage/receipts/${filename}`; 
+    const storageBase = typeof BASE_URL !== 'undefined' ? BASE_URL.replace('/api/v1', '/storage') : '/storage';
+    img.src = `${storageBase}/receipts/${filename}`; 
     /* NOTE: Adjust path if backend stores elsewhere like '/storage/' without receipts */
     // Fallback if needed
     img.onerror = function() {
-        this.src = `http://haraj-maareb.test/storage/${filename}`;
+        this.src = `${storageBase}/${filename}`;
     };
     modal.classList.add('active');
 }
@@ -416,7 +471,7 @@ async function loadCategories() {
                 <td>#${cat.id}</td>
                 <td>${cat.name_ar}</td>
                 <td>${cat.name_en}</td>
-                <td>${cat.icon ? `<img src="http://haraj-maareb.test/storage/${cat.icon}" width="30">` : 'N/A'}</td>
+                <td>${cat.icon ? `<img src="${typeof BASE_URL !== 'undefined' ? BASE_URL.replace('/api/v1', '/storage') : '/storage'}/${cat.icon}" width="30">` : 'N/A'}</td>
             `;
             tbody.appendChild(tr);
         });

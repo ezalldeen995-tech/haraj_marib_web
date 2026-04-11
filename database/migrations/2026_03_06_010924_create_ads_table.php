@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('price', 12, 2);
             $table->string('currency')->default('YER');
             $table->string('address_text');
-            $table->decimal('lat', 10, 8);
-            $table->decimal('lng', 11, 8);
+            $table->decimal('lat', 10, 8)->nullable();
+            $table->decimal('lng', 11, 8)->nullable();
             $table->enum('status', ['pending','active','rejected','sold'])->default('pending');
             $table->boolean('is_featured')->default(false);
             $table->integer('views_count')->default(0);

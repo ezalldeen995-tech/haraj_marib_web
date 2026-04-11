@@ -445,7 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 recentAdsGrid.innerHTML = ads.map((ad, index) => {
                     const delay = index * 0.05;
-                    const img = ad.images && ad.images[0] ? `/storage/${ad.images[0].image_path}` : 'https://placehold.co/600x400/FFEDD5/F97316?text=بدون+صورة';
+                    const imgPath = ad.images && ad.images[0] ? ad.images[0].image_path : null;
+                    const img = imgPath ? (imgPath.startsWith('http') ? imgPath : `/storage/${imgPath}`) : 'https://placehold.co/600x400/FFEDD5/F97316?text=بدون+صورة';
                     const priceStr = ad.price > 0 ? `${ad.price.toLocaleString('en-US')} ${ad.currency}` : 'على السوم';
                     const location = ad.location || 'غير محدد';
                     const timeAgo = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-SA') : '';

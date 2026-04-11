@@ -133,6 +133,8 @@ class AdController extends Controller
 
         $adData = array_merge($data, [
             'user_id' => $user->id,
+            'lat' => $data['lat'] ?? 0,
+            'lng' => $data['lng'] ?? 0,
         ]);
 
         if ($user->hasActiveSubscription()) {

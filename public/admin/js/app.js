@@ -116,7 +116,7 @@ function showConfirmModal(title, message, callback) {
     }
 
     document.getElementById('bsConfirmTitle').innerText = title;
-    document.getElementById('bsConfirmMessage').innerText = message;
+    document.getElementById('bsConfirmMessage').innerHTML = message;
 
     confirmCallback = callback;
     bsConfirmModalInstance.show();
