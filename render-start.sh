@@ -25,6 +25,9 @@ php artisan view:cache
 # Run migrations
 php artisan migrate --force
 
+# Run Seeders (to add Admin and initial data)
+php artisan db:seed --force
+
 echo "✅ Laravel is ready!"
 
 # Start Apache
