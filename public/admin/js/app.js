@@ -1,7 +1,7 @@
 // public/admin/js/app.js
 
 // --- API Base URL ---
-const BASE_URL = 'http://haraj.test/api/v1';
+const BASE_URL = `${window.location.origin}/api/v1`;
 
 // --- API Wrapper ---
 async function apiRequest(method, endpoint, data = null) {
