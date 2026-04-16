@@ -100,7 +100,8 @@ class EloquentAdRepository implements AdRepositoryInterface
             $query->orderBy('created_at', 'desc');
         }
 
-        return $query->paginate(10);
+        $perPage = $filters['per_page'] ?? 10;
+        return $query->paginate((int) $perPage);
     }
 
     public function update($id, array $data): bool

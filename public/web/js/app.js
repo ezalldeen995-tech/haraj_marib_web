@@ -502,9 +502,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Recent Ads (Homepage)
     const recentAdsGrid = document.getElementById('homeRecentAdsGrid');
     if (recentAdsGrid) {
-        API.get('/ads?sort=latest&per_page=8').then(result => {
-            if (result.success && result.data && result.data.data) {
-                const ads = result.data.data;
+        API.get('/ads?sort=latest&per_page=4').then(result => {
+            if (result.success && result.data) {
+                let ads = Array.isArray(result.data) ? result.data : (result.data.data || []);
+                if (!Array.isArray(ads)) ads = [];
+
                 if (ads.length === 0) {
                     recentAdsGrid.innerHTML = '<div class="col-12 text-center text-muted">لا توجد إعلانات حالياً</div>';
                     return;
@@ -514,15 +516,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     const delay = index * 0.05;
                     const imgPath = ad.images && ad.images[0] ? ad.images[0].image_path : null;
                     const img = API.resolveImageUrl(imgPath);
-                    const priceStr = ad.price > 0 ? `${ad.price.toLocaleString('en-US')} ${ad.currency}` : 'على السوم';
-                    const location = ad.location || 'غير محدد';
-                    const timeAgo = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-SA') : '';
+                    const priceStr = ad.price > 0 ? `${Number(ad.price).toLocaleString('ar-YE')} ر.ي` : 'على السوم';
+                    const location = ad.address_text || 'غير محدد';
+                    const timeAgo = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-YE') : '';
 
                     return `
                         <div class="col-12 col-sm-6 col-lg-3" style="animation: fadeInUp 0.5s ease forwards; animation-delay: ${delay}s; opacity: 0;">
                             <a href="/web/ad-details.html?id=${ad.id}" class="text-decoration-none">
                                 <div class="ad-card h-100">
-                                    <div class="ad-card-img">
+                                    <div class="ad-card-img position-relative">
+                                        <div class="position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+                                            <span class="badge bg-danger rounded-pill shadow-sm py-1 px-2" style="font-size: 0.8rem;"><i class="bi bi-fire me-1"></i> جديد</span>
+                                        </div>
                                         <img src="${img}" alt="${ad.title}" loading="lazy">
                                     </div>
                                     <div class="ad-card-body">

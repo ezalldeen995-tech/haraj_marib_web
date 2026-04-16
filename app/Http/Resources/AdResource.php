@@ -14,13 +14,10 @@ class AdResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'price' => $this->price,
-            'formatted_price' => number_format($this->price, 2) . ' SAR', // Assuming SAR currency
-            'location' => $this->address_text,
+        $data = parent::toArray($request);
+        
+        $custom = [
+            'formatted_price' => number_format($this->price, 2) . ' YER', // YER according to Yemen Riyal
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
@@ -46,5 +43,7 @@ class AdResource extends JsonResource
             }),
             'created_at_diff' => $this->created_at->diffForHumans(),
         ];
+
+        return array_merge($data, $custom);
     }
 }

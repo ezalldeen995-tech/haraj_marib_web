@@ -63,6 +63,7 @@
     <!-- HERO SECTION -->
     <!-- ============================================ -->
     <section class="hero-section modern-hero">
+        <div class="hero-bg-overlay"></div>
         <!-- Animated Background Shapes -->
         <div class="hero-shape shape-1"></div>
         <div class="hero-shape shape-2"></div>
@@ -82,14 +83,14 @@
                     </p>
                     
                     <!-- Glassmorphism Search Bar -->
-                    <div class="hero-search-container glass-card p-2 p-md-3 rounded-4 shadow-lg mx-auto" style="max-width: 800px;">
-                        <form id="heroSearchForm" class="d-flex flex-column flex-md-row gap-2">
+                    <div class="hero-search-container glass-card p-3 rounded-5 shadow-lg mx-auto mt-5" style="max-width: 800px;">
+                        <form id="heroSearchForm" class="d-flex flex-column flex-md-row gap-3">
                             <div class="position-relative flex-grow-1">
-                                <i class="bi bi-search position-absolute text-muted" style="top: 50%; right: 16px; transform: translateY(-50%); font-size: 1.2rem;"></i>
-                                <input type="text" id="heroSearchInput" class="form-control form-control-lg border-0 bg-white" placeholder="ما الذي تبحث عنه؟ (مثال: كامري 2020، شقة للإيجار)" style="padding-right: 48px; border-radius: 12px; height: 60px; font-size: 1.05rem;" required>
+                                <i class="bi bi-search position-absolute text-muted" style="top: 50%; right: 20px; transform: translateY(-50%); font-size: 1.3rem;"></i>
+                                <input type="text" id="heroSearchInput" class="form-control form-control-lg glass-input border-0 rounded-4" placeholder="ما الذي تبحث عنه؟ (مثال: كامري 2020، شقة للإيجار)" style="padding-right: 56px; height: 60px; font-size: 1.1rem; padding-left: 20px;" required>
                             </div>
-                            <button type="submit" class="btn btn-warning btn-lg px-4 px-md-5 fw-bold" style="border-radius: 12px; height: 60px;">
-                                بحث <i class="bi bi-arrow-left ms-1"></i>
+                            <button type="submit" class="btn btn-warning btn-lg px-4 px-md-5 fw-bold rounded-4 shadow-sm" style="height: 60px; font-size: 1.15rem;">
+                                ابحث الآن <i class="bi bi-arrow-left-short ms-1 fs-4"></i>
                             </button>
                         </form>
                     </div>
@@ -127,17 +128,17 @@
     <!-- ============================================ -->
     <!-- RECENT ADS SECTION -->
     <!-- ============================================ -->
-    <section class="recent-ads-section" style="padding: 60px 0; background: var(--body-bg);">
+    <section class="recent-ads-section" style="padding: 80px 0; background: var(--light);">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-end mb-4">
+            <div class="d-flex justify-content-between align-items-end mb-5">
                 <div>
-                    <h2 class="section-title" style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">
+                    <h2 class="section-title" style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px;">
                         أحدث الإعلانات
-                        <i class="bi bi-fire text-danger ms-1"></i>
+                        <span class="badge bg-danger rounded-pill px-3 shadow-sm ms-2" style="font-size: 0.9rem; vertical-align: middle;"><i class="bi bi-fire me-1"></i> جديد</span>
                     </h2>
-                    <p class="text-secondary mb-0">اكتشف أحدث العروض المضافة للتو</p>
+                    <p class="text-secondary mb-0 fs-5">اكتشف أحدث العروض المضافة للتو باقتناص الفرص المميزة</p>
                 </div>
-                <a href="ads.html" class="btn btn-outline-primary d-none d-md-inline-block">عرض الكل <i class="bi bi-arrow-left ms-1"></i></a>
+                <a href="ads.html" class="btn btn-outline-primary d-none d-md-inline-flex px-4 py-2 rounded-pill">عرض الكل <i class="bi bi-arrow-left ms-1"></i></a>
             </div>
             
             <div class="row g-4" id="homeRecentAdsGrid">
@@ -209,10 +210,10 @@
                 سجّل الآن وابدأ ببيع وشراء ما تريد بكل سهولة
             </p>
             <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="/web/register.html" class="btn btn-primary btn-lg px-5">
+                <a href="/web/register.html" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg">
                     <i class="bi bi-person-plus me-2"></i> إنشاء حساب مجاني
                 </a>
-                <a href="ads.html" class="btn btn-outline-primary btn-lg px-5">
+                <a href="ads.html" class="btn btn-outline-primary btn-lg px-5 rounded-pill bg-white">
                     <i class="bi bi-grid me-2"></i> تصفح الإعلانات
                 </a>
             </div>
