@@ -107,11 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Move to Step 2 (OTP Verification)
                 goToStep(2);
                 UI.showAlert('alertContainer', getErrorMessage('otp_sent'), 'success');
-                
-                // For local development testing
-                if (result.data && result.data.otp_code) {
-                    alert(`Your verification code is: ${result.data.otp_code}`);
-                }
             } else {
                 // Handle validation errors
                 if (result.errors) {
@@ -171,11 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     UI.showAlert('alertContainer', getErrorMessage('otp_sent'), 'success');
                     // Disable resend for 60 seconds
                     startResendCountdown(resendBtn);
-
-                    // For local development testing
-                    if (result.data && result.data.otp_code) {
-                        alert(`Your verification code is: ${result.data.otp_code}`);
-                    }
                 } else {
                     UI.showAlert('alertContainer', getErrorMessage(result.message), 'danger');
                 }
@@ -218,11 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (document.getElementById('resetStep')) {
                     document.getElementById('resetStep').style.display = 'block';
-                }
-
-                // For local development testing
-                if (result.data && result.data.otp_code) {
-                    alert(`Your verification code is: ${result.data.otp_code}`);
                 }
             } else {
                 UI.showAlert('alertContainer', getErrorMessage(result.message), 'danger');

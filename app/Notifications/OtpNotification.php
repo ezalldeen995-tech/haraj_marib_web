@@ -29,8 +29,13 @@ class OtpNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        // use log channel for SMS simulation
+        // Use Sidobe Service to send real WhatsApp message
+        $message = "كود التحقق الخاص بك في حراج مارب هو: " . $this->code;
+        \App\Services\SidobeService::sendMessage($notifiable->phone, $message);
+
+        // Keep logging for debugging purposes
         \Illuminate\Support\Facades\Log::info("OTP code for {$notifiable->phone}: {$this->code}");
+        
         return [];
     }
 
