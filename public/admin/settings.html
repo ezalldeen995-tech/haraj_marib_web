@@ -20,6 +20,7 @@
                 <li class="nav-item w-100" id="nav-users">
                     <a href="users.html" class="nav-link"><i class="bi bi-people"></i>المستخدمين</a></li>
                 <li class="nav-item w-100"><a href="ads.html" class="nav-link"><i class="bi bi-megaphone"></i>الإعلانات</a></li>
+                <li class="nav-item w-100"><a href="orders.html" class="nav-link"><i class="bi bi-basket"></i>الطلبات</a></li>
                 <li class="nav-item w-100"><a href="payments.html" class="nav-link"><i class="bi bi-cash-stack"></i>المدفوعات</a></li>
                 <li class="nav-item w-100"><a href="categories.html" class="nav-link"><i class="bi bi-grid"></i>الأقسام</a></li>
                 <li class="nav-item w-100"><a href="contact.html" class="nav-link"><i class="bi bi-envelope"></i>الرسائل</a></li>
@@ -52,14 +53,117 @@
 
             <div class="container-fluid p-4">
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                    <div class="col-lg-10">
+                        <!-- App General Info -->
                         <div class="card shadow-sm border-0 mb-4">
                             <div class="card-header bg-white border-bottom py-3">
-                                <h5 class="mb-0 fw-bold"><i class="bi bi-gear text-secondary me-2"></i> المتغيرات العامة</h5>
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle text-primary me-2"></i> معلومات التطبيق</h5>
                             </div>
-                            <div class="card-body p-4 w-100" id="settings-container">
-                                <!-- Filled by JS -->
-                                <div class="text-center text-muted py-4">جاري التحميل...</div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">اسم التطبيق</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-app_name" class="form-control">
+                                            <button class="btn btn-primary" onclick="updateSetting('app_name')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">سعر الاشتراك الشهري</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.01" id="setting-subscription_price_monthly" class="form-control">
+                                            <button class="btn btn-primary" onclick="updateSetting('subscription_price_monthly')">حفظ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-telephone text-success me-2"></i> معلومات التواصل</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">البريد الإلكتروني</label>
+                                        <div class="input-group">
+                                            <input type="email" id="setting-contact_email" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('contact_email')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">رقم الهاتف</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-contact_phone" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('contact_phone')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">الموقع / العنوان</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-contact_location" class="form-control">
+                                            <button class="btn btn-primary" onclick="updateSetting('contact_location')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">ساعات العمل</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-working_hours" class="form-control">
+                                            <button class="btn btn-primary" onclick="updateSetting('working_hours')">حفظ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-share text-info me-2"></i> روابط التواصل الاجتماعي</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i class="bi bi-whatsapp me-1"></i> رابط واتساب</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-whatsapp_url" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('whatsapp_url')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i class="bi bi-telegram me-1"></i> رابط تليجرام</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-telegram_url" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('telegram_url')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i class="bi bi-facebook me-1"></i> رابط فيسبوك</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-facebook_url" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('facebook_url')">حفظ</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i class="bi bi-twitter-x me-1"></i> رابط تويتر</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-twitter_url" class="form-control" dir="ltr">
+                                            <button class="btn btn-primary" onclick="updateSetting('twitter_url')">حفظ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Settings -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-gear text-secondary me-2"></i> إعدادات أخرى</h5>
+                            </div>
+                            <div class="card-body p-4" id="settings-container">
+                                <div class="text-center text-muted py-4">جاري تحميل بقية الإعدادات...</div>
                             </div>
                         </div>
                     </div>

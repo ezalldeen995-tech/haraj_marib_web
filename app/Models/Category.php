@@ -12,7 +12,14 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'name_ar', 'name_en', 'icon', 'parent_id', 'is_active'];
+    protected $fillable = ['name_ar', 'name_en', 'icon', 'parent_id', 'is_active'];
+
+    protected $appends = ['name'];
+
+    public function getNameAttribute()
+    {
+        return $this->name_ar;
+    }
 
     public function ads(): HasMany
     {

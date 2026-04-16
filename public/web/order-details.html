@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الطلب - حراج مأرب</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css?v=6">
+</head>
+
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/web/index.html">
+                <i class="bi bi-shop text-primary"></i> حراج مأرب
+            </a>
+            <div id="navAuthArea" class="ms-auto"></div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <h3 class="fw-bold mb-0"><i class="bi bi-receipt me-2 text-primary"></i>تفاصيل الطلب <span id="orderIdDisplay" class="text-muted"></span></h3>
+            <a href="my-orders.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> العودة للطلبات</a>
+        </div>
+
+        <div id="orderDetailsContainer">
+            <div class="row g-4">
+                <!-- Order Info -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0">
+                            <h5 class="fw-bold"><i class="bi bi-info-circle me-1 text-primary"></i> معلومات أساسية</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-muted" style="width:30%;">حالة الطلب:</th>
+                                        <td><span id="orderStatusBadge" class="badge bg-secondary">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">الإعلان:</th>
+                                        <td id="orderAdTitle" class="fw-bold">--</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">المبلغ المطلوب:</th>
+                                        <td id="orderAmount" class="text-primary fw-bold">--</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">تاريخ الطلب:</th>
+                                        <td id="orderDate">--</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted" id="otherPartyRole">--:</th>
+                                        <td id="otherPartyName">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payment Proof Display Block -->
+                    <div class="card border-0 shadow-sm d-none" id="proofDisplayBlock" style="border-radius:16px;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0">
+                            <h5 class="fw-bold"><i class="bi bi-card-image me-1 text-primary"></i> إيصال الدفع المرفوع</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <img id="proofImageDisplay" src="" alt="إيصال الدفع" class="img-fluid rounded border mb-3" style="max-height: 300px; object-fit: contain; cursor:pointer;" onclick="window.open(this.src, '_blank')">
+                            <p class="text-muted small">الملاحظة: <span id="proofNoteDisplay" class="fw-bold text-dark"></span></p>
+                            <p class="mb-2">حالة الإيصال: <span id="proofStatusDisplay">--</span></p>
+                            
+                            <!-- Rejection Info (visible when rejected) -->
+                            <div id="rejectionInfoDisplay" class="mt-3 p-3 bg-danger-subtle rounded border border-danger-subtle d-none">
+                                <h6 class="fw-bold text-danger mb-2"><i class="bi bi-x-circle-fill"></i> تفاصيل الرفض من البائع:</h6>
+                                <p class="mb-2 small fw-bold" id="rejectionNoteDisplay"></p>
+                                <div id="rejectionImageWrapper" class="d-none">
+                                    <p class="small text-muted mb-1">إثبات الرفض:</p>
+                                    <img id="rejectionImageDisplay" src="" class="img-fluid rounded border" style="max-height: 200px; cursor:pointer;" onclick="window.open(this.src, '_blank')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seller Review Block -->
+                    <div class="card border-0 shadow-sm bg-light mt-4 border-start border-4 border-info d-none" id="sellerReviewBlock">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-info"><i class="bi bi-exclamation-triangle"></i> بانتظار مراجعتك</h5>
+                            <p class="text-muted mb-3">المشتري قام برفع الإيصال أعلاه. الرجاء التأكد من وصول الحوالة البنكية/المصرفية ثم إتخاذ القرار.</p>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-success flex-grow-1" id="btnAcceptProof"><i class="bi bi-check-circle"></i> تأكيد استلام المبلغ</button>
+                                <button class="btn btn-outline-danger flex-grow-1" id="btnRejectProof"><i class="bi bi-x-circle"></i> رفض الإيصال</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Action (Buyer side) -->
+                <div class="col-lg-6">
+                    <!-- Bank Instructions -->
+                    <div class="card border-0 shadow-sm mb-4 border-start border-4 border-warning d-none" id="paymentInfoBlock" style="border-radius:16px;">
+                        <div class="card-body">
+                            <h5 class="fw-bold"><i class="bi bi-bank2 me-1"></i> تعليمات الدفع</h5>
+                            <p class="text-muted">الرجاء إرسال المبلغ المطلوب إلى الحساب التالي (حساب الإدارة الوسيط):</p>
+                            <div class="bg-light p-3 rounded mb-2">
+                                <p class="mb-1 fw-bold">بنك الكريمي</p>
+                                <p class="mb-0 font-monospace fs-5">123456789</p>
+                            </div>
+                            <small class="text-danger"><i class="bi bi-shield-lock me-1"></i> سيبقى المبلغ في ذمة الموقع حتى تأكيد الاستلام من البائع وإتمام عملية البيع.</small>
+                        </div>
+                    </div>
+
+                    <!-- Upload Proof Form -->
+                    <div class="card border-0 shadow-sm d-none" id="proofUploadBlock" style="border-radius:16px;">
+                        <div class="card-header bg-white border-0 pt-4 pb-0">
+                            <h5 class="fw-bold"><i class="bi bi-cloud-arrow-up me-1 text-primary"></i> إرفاق سند الدفع</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="proofAlertContainer"></div>
+                            <form id="proofForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">صورة الإيصال (سند الحوالة) <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" id="proofImage" accept="image/png, image/jpeg, image/jpg" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">ملاحظات إضافية (رقم الحوالة، اسم المرسل...)</label>
+                                    <textarea class="form-control" id="proofNote" rows="3" placeholder="أدخل أي تفاصيل قد تساعد في التحقق من الحوالة..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100" id="btnSubmitProof">
+                                    <i class="bi bi-send me-1"></i> إرسال الإيصال للمراجعة
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer mt-auto py-3 bg-white text-center border-top">
+        <div class="container text-muted small">
+            © 2026 حراج مأرب. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <!-- Confirm Action Modal -->
+    <div class="modal fade" id="sellerConfirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;">
+          <div class="modal-header bg-light border-bottom-0 pb-0">
+              <h5 class="modal-title fw-bold">تأكيد المراجعة</h5>
+              <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-center py-4">
+              <img id="modalConfirmImg" src="" class="img-fluid rounded border mb-3" style="max-height: 250px; object-fit: contain;">
+              <p class="text-muted small mb-3">الملاحظة المرفقة: <span id="modalConfirmNote" class="fw-bold text-dark"></span></p>
+              <h5 class="fw-bold mb-0 text-primary" id="modalConfirmMessage">هل أنت متأكد من الإجراء؟</h5>
+              <input type="hidden" id="modalConfirmAction">
+
+              <!-- Rejection Fields -->
+              <div id="rejectionFields" class="mt-4 text-start d-none">
+                  <hr>
+                  <div class="mb-3">
+                      <label class="form-label fw-bold">إثبات عدم وصول الحوالة (اختياري)</label>
+                      <input type="file" class="form-control" id="rejectionImage" accept="image/*">
+                      <div class="form-text">يمكنك إرفاق صورة توضح عدم استلام المبلغ (مثلاً كشف حساب).</div>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label fw-bold">سبب الرفض</label>
+                      <textarea class="form-control" id="rejectionNote" rows="2" placeholder="أدخل سبب الرفض أو أي ملاحظات للمشتري..."></textarea>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer border-top-0 d-flex gap-2">
+              <button type="button" class="btn btn-secondary flex-grow-1" data-bs-dismiss="modal">تراجع</button>
+              <button type="button" class="btn btn-primary flex-grow-1" id="btnExecuteConfirm">تأكيد الإجراء</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js?v=10"></script>
+    <script src="js/order.js?v=10"></script>
+</body>
+</html>

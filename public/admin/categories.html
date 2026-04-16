@@ -20,6 +20,7 @@
                 <li class="nav-item w-100" id="nav-users">
                     <a href="users.html" class="nav-link"><i class="bi bi-people"></i>المستخدمين</a></li>
                 <li class="nav-item w-100"><a href="ads.html" class="nav-link"><i class="bi bi-megaphone"></i>الإعلانات</a></li>
+                <li class="nav-item w-100"><a href="orders.html" class="nav-link"><i class="bi bi-basket"></i>الطلبات</a></li>
                 <li class="nav-item w-100"><a href="payments.html" class="nav-link"><i class="bi bi-cash-stack"></i>المدفوعات</a></li>
                 <li class="nav-item w-100"><a href="categories.html" class="nav-link active"><i class="bi bi-grid"></i>الأقسام</a></li>
                 <li class="nav-item w-100"><a href="contact.html" class="nav-link"><i class="bi bi-envelope"></i>الرسائل</a></li>
@@ -53,6 +54,13 @@
             </header>
 
             <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0 fw-bold">إدارة الأقسام</h5>
+                    <button class="btn btn-primary shadow-sm px-4 fw-bold" onclick="openCategoryModal()">
+                        <i class="bi bi-plus-lg me-1"></i> إضافة قسم جديد
+                    </button>
+                </div>
+
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white border-bottom py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-grid text-primary me-2"></i> الأقسام الرئيسية</h5>
@@ -65,14 +73,58 @@
                                     <th>الاسم (عربي)</th>
                                     <th>الاسم (إنجليزي)</th>
                                     <th>الأيقونة</th>
+                                    <th>الحالة</th>
+                                    <th>العمليات</th>
                                 </tr>
                             </thead>
-                            <tbody><tr><td colspan="4" class="text-center py-4 text-muted">جاري التحميل...</td></tr></tbody>
+                            <tbody><tr><td colspan="6" class="text-center py-4 text-muted">جاري التحميل...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-header bg-light">
+            <h5 class="modal-title fw-bold" id="categoryModalTitle">إضافة قسم جديد</h5>
+            <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal"></button>
+          </div>
+          <form id="category-form">
+            <div class="modal-body p-4">
+              <input type="hidden" id="category-id">
+              <div class="mb-3">
+                <label class="form-label fw-bold">الاسم بالعربي</label>
+                <input type="text" id="cat-name-ar" class="form-control" required placeholder="مثال: عقارات">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">الاسم بالإنجليزي</label>
+                <input type="text" id="cat-name-en" class="form-control" required placeholder="Example: Real Estate">
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">الأيقونة</label>
+                <input type="file" id="cat-icon" class="form-control" accept="image/*">
+                <div id="cat-icon-preview" class="mt-2" style="display: none;">
+                    <img src="" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" id="cat-active" checked>
+                  <label class="form-check-label fw-bold" for="cat-active">القسم نشط</label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-0 p-4">
+              <button type="button" class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal">إلغاء</button>
+              <button type="submit" class="btn btn-primary px-4 fw-bold border-0 shadow-sm">حفظ التغييرات</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <!-- Confirm Modal -->

@@ -276,9 +276,7 @@ const PAYMENTS = {
                 const monthLabel = monthsMap[payment.months] || `${payment.months} شهر`;
                 const amount = Number(payment.amount || 0).toLocaleString('ar-YE');
                 const date = new Date(payment.created_at).toLocaleDateString('ar-SA');
-                const receiptUrl = payment.receipt_image
-                    ? `http://haraj-maareb.test/storage/${payment.receipt_image}`
-                    : null;
+                const receiptUrl = API.resolveImageUrl(payment.receipt_image, null);
 
                 return `
                     <div class="payment-history-item">

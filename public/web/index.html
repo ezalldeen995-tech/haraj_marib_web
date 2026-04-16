@@ -284,14 +284,25 @@
 
             grid.innerHTML = list.map((cat, index) => {
                 const name = cat.name || cat.name_ar || cat.name_en;
-                const icon = cat.icon || defaultIcons[name] || 'bi-tag';
+                let iconHtml = '';
+                
+                // If cat.icon is a URL or a path (contains / or .), render as img
+                if (cat.icon && (cat.icon.includes('/') || cat.icon.includes('.'))) {
+                    const iconPath = cat.icon.startsWith('http') ? cat.icon : `/storage/${cat.icon}`;
+                    iconHtml = `<img src="${iconPath}" alt="${name}" style="width: 40px; height: 40px; object-fit: contain;">`;
+                } else {
+                    // Otherwise assume it's a Bootstrap icon class
+                    const iconClass = cat.icon || defaultIcons[name] || 'bi-tag';
+                    iconHtml = `<i class="bi ${iconClass}"></i>`;
+                }
+
                 const delay = index * 0.05; // staggered animation
                 return `
                     <div class="col-6 col-md-4 col-lg-3 col-xl-2" style="animation: fadeInUp 0.5s ease forwards; animation-delay: ${delay}s; opacity: 0;">
                         <a href="/web/ads.html?category_id=${cat.id}" class="text-decoration-none">
                             <div class="modern-category-card">
                                 <div class="modern-category-icon">
-                                    <i class="bi ${icon}"></i>
+                                    ${iconHtml}
                                 </div>
                                 <h6 class="modern-category-name">${name}</h6>
                             </div>

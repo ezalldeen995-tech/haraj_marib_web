@@ -15,6 +15,20 @@ const API_BASE_URL = 'http://haraj.test/api/v1';
 // ============================================
 const API = {
     /**
+     * Resolve image URL handling both full URLs and relative storage paths.
+     * @param {string} path - Image path or URL
+     * @param {string} [fallback] - Fallback image if path is null
+     * @returns {string}
+     */
+    resolveImageUrl(path, fallback = 'https://placehold.co/600x400/FFEDD5/F97316?text=بدون+صورة') {
+        if (!path) return fallback;
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
+        // If it already starts with /storage/ or storage/, don't double it
+        if (path.startsWith('/storage/')) return path;
+        if (path.startsWith('storage/')) return `/${path}`;
+        return `/storage/${path}`;
+    },
+    /**
      * Send a POST request to the API.
      * Automatically includes Content-Type and Auth token if available.
      * @param {string} endpoint - API endpoint (e.g., '/login')
@@ -127,6 +141,44 @@ const API = {
             };
         }
     },
+
+    /**
+     * Send a PUT request to the API.
+     * @param {string} endpoint
+     * @param {object} data
+     * @returns {Promise<object>}
+     */
+    async put(endpoint, data) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        };
+
+        const token = AUTH.getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            result._status = response.status;
+
+            return result;
+        } catch (error) {
+            console.error(`API PUT ${endpoint} Error:`, error);
+            return {
+                success: false,
+                message: 'network_error',
+                _status: 0,
+            };
+        }
+    },
 };
 
 // ============================================
@@ -135,7 +187,7 @@ const API = {
 const CATEGORIES = {
     CACHE_KEY: 'categories_cache',
     CACHE_TS_KEY: 'categories_cache_ts',
-    CACHE_TTL: 60 * 60 * 1000, // 1 hour in ms
+    CACHE_TTL: 2 * 60 * 1000, // 2 minutes (faster updates for added categories)
 
     /**
      * Load categories from cache or API.
@@ -358,6 +410,21 @@ const AUTH = {
         localStorage.removeItem('authUser');
         window.location.href = '/web/login.html';
     },
+
+    /**
+     * Fetch user profile from API if missing from localStorage but token exists.
+     * @returns {Promise<object|null>}
+     */
+    async syncUser() {
+        if (this.isLoggedIn() && !this.getUser()) {
+             const result = await API.get('/me');
+             if (result.success && result.data) {
+                 localStorage.setItem('authUser', JSON.stringify(result.data));
+                 return result.data;
+             }
+        }
+        return this.getUser();
+    },
 };
 
 // ============================================
@@ -442,15 +509,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     recentAdsGrid.innerHTML = '<div class="col-12 text-center text-muted">لا توجد إعلانات حالياً</div>';
                     return;
                 }
-                
+
                 recentAdsGrid.innerHTML = ads.map((ad, index) => {
                     const delay = index * 0.05;
                     const imgPath = ad.images && ad.images[0] ? ad.images[0].image_path : null;
-                    const img = imgPath ? (imgPath.startsWith('http') ? imgPath : `/storage/${imgPath}`) : 'https://placehold.co/600x400/FFEDD5/F97316?text=بدون+صورة';
+                    const img = API.resolveImageUrl(imgPath);
                     const priceStr = ad.price > 0 ? `${ad.price.toLocaleString('en-US')} ${ad.currency}` : 'على السوم';
                     const location = ad.location || 'غير محدد';
                     const timeAgo = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-SA') : '';
-                    
+
                     return `
                         <div class="col-12 col-sm-6 col-lg-3" style="animation: fadeInUp 0.5s ease forwards; animation-delay: ${delay}s; opacity: 0;">
                             <a href="/web/ad-details.html?id=${ad.id}" class="text-decoration-none">
@@ -504,6 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/web/profile.html"><i class="bi bi-person me-2"></i>الملف الشخصي</a></li>
                             <li><a class="dropdown-item" href="/web/profile.html"><i class="bi bi-megaphone me-2"></i>إعلاناتي</a></li>
+                            <li><a class="dropdown-item" href="/web/my-orders.html"><i class="bi bi-bag-check me-2"></i>طلباتي</a></li>
                             <li><a class="dropdown-item" href="/web/favorites.html"><i class="bi bi-heart me-2"></i>المفضلة</a></li>
                             <li><a class="dropdown-item" href="/web/payments.html"><i class="bi bi-credit-card me-2"></i>الاشتراكات والمدفوعات</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -536,7 +604,34 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
     }
+
+    // Apply global branding from settings
+    loadGlobalBranding();
 });
+
+/**
+ * Load global settings (app name, etc.) and apply to shared elements.
+ */
+async function loadGlobalBranding() {
+    try {
+        const settings = await SETTINGS.load();
+        const settingsMap = SETTINGS.getAll();
+
+        // Update App Name
+        const appName = settingsMap['app_name'];
+        if (appName) {
+            document.querySelectorAll('.navbar-brand, .footer-brand').forEach(el => {
+                const icon = el.querySelector('i');
+                const text = document.createTextNode(' ' + appName);
+                el.innerHTML = '';
+                if (icon) el.appendChild(icon);
+                el.appendChild(text);
+            });
+        }
+    } catch (err) {
+        console.error('Failed to load global branding', err);
+    }
+}
 
 /**
  * Fetch and update the unread notifications count in the navbar badge.

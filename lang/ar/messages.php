@@ -82,4 +82,9 @@ return [
 
     // الإعدادات
     'setting_updated' => 'تم تحديث الإعداد بنجاح',
+
+    // الأقسام
+    'category_created' => 'تم إنشاء القسم بنجاح',
+    'category_updated' => 'تم تحديث القسم بنجاح',
+    'category_deleted' => 'تم حذف القسم بنجاح',
 ];

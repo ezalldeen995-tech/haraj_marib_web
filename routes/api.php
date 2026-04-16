@@ -59,6 +59,13 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
     Route::post('payments/request', [PaymentController::class , 'requestSubscription']);
     Route::get('payments', [PaymentController::class , 'myPayments']);
 
+    // Order routes
+    Route::get('orders', [\App\Http\Controllers\OrderController::class, 'myOrders']);
+    Route::post('orders', [\App\Http\Controllers\OrderController::class, 'store']);
+    Route::get('orders/{id}', [\App\Http\Controllers\OrderController::class, 'show']);
+    Route::post('orders/{id}/upload-proof', [\App\Http\Controllers\OrderController::class, 'uploadProof']);
+    Route::post('orders/{id}/review', [\App\Http\Controllers\OrderController::class, 'reviewProof']);
+
     // comment & rating endpoints
     Route::post('comments', [\App\Http\Controllers\CommentController::class , 'store']);
     Route::delete('comments/{id}', [\App\Http\Controllers\CommentController::class , 'destroy']);
@@ -110,6 +117,10 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
             Route::post('ads/{id}/approve', [AdminController::class , 'approveAd']);
             Route::post('ads/{id}/reject', [AdminController::class , 'rejectAd']);
 
+            // Orders
+            Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
+            Route::post('orders/{id}/review', [\App\Http\Controllers\Api\Admin\OrderController::class, 'review']);
+
             Route::get('activity-logs', [AdminController::class , 'logs']);
             Route::get('contact-messages', [AdminController::class , 'contactMessages']);
             Route::delete('contact-messages/{id}', [\App\Http\Controllers\ContactController::class , 'destroy']);
@@ -117,6 +128,11 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
             Route::post('reports/{id}/dismiss', [AdminController::class , 'dismissReport']);
             Route::post('notifications/send', [AdminController::class , 'sendNotifications']);
             Route::get('analytics', [AdminController::class , 'getAnalytics']);
+
+            Route::get('categories', [\App\Http\Controllers\CategoryController::class , 'index']);
+            Route::post('categories', [\App\Http\Controllers\CategoryController::class , 'store']);
+            Route::put('categories/{id}', [\App\Http\Controllers\CategoryController::class , 'update']);
+            Route::delete('categories/{id}', [\App\Http\Controllers\CategoryController::class , 'destroy']);
 
             Route::match (['get', 'post'], 'settings', [AdminController::class , 'settings']);
             Route::get('dashboard/stats', [\App\Http\Controllers\DashboardController::class , 'stats']);

@@ -162,9 +162,7 @@ const ADS_PAGE = {
      * Render a single ad card.
      */
     renderAdCard(ad) {
-        const image = ad.images && ad.images.length > 0
-            ? `/storage/${ad.images[0].image_path}`
-            : 'https://placehold.co/400x250/FFEDD5/F97316?text=لا+توجد+صورة';
+        const image = API.resolveImageUrl(ad.images && ad.images.length > 0 ? ad.images[0].image_path : null, 'https://placehold.co/400x250/FFEDD5/F97316?text=لا+توجد+صورة');
         const price = Number(ad.price).toLocaleString('ar-YE');
         const date = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-YE') : '';
         const isFeatured = ad.is_featured ? '<span class="ad-badge-featured"><i class="bi bi-star-fill"></i> مميز</span>' : '';
@@ -296,7 +294,10 @@ const AD_DETAILS = {
     /**
      * Initialize the ad details page.
      */
-    init() {
+    async init() {
+        // Sync user data if missing to ensure owner identification works
+        await AUTH.syncUser();
+
         const params = new URLSearchParams(window.location.search);
         this.adId = params.get('id');
 
@@ -324,6 +325,32 @@ const AD_DETAILS = {
         const chatBtn = document.getElementById('btnChat');
         if (chatBtn) {
             chatBtn.addEventListener('click', () => this.startChat());
+        }
+
+        const buyBtn = document.getElementById('btnBuyAd');
+        if (buyBtn) {
+            buyBtn.addEventListener('click', () => this.buyAd());
+        }
+
+        // Owner Action Buttons
+        const markSoldBtn = document.getElementById('btnMarkSold');
+        if (markSoldBtn) {
+            markSoldBtn.addEventListener('click', () => this.markAsSold());
+        }
+
+        const editBtn = document.getElementById('btnEditAd');
+        if (editBtn) {
+            editBtn.addEventListener('click', () => this.editAd());
+        }
+
+        const renewBtn = document.getElementById('btnRenewAd');
+        if (renewBtn) {
+            renewBtn.addEventListener('click', () => this.renewAd());
+        }
+
+        const deleteBtn = document.getElementById('btnDeleteAd');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => this.deleteAd());
         }
     },
 
@@ -359,14 +386,14 @@ const AD_DETAILS = {
         if (imagesContainer && ad.images && ad.images.length > 0) {
             // Main image
             const mainImg = document.getElementById('mainAdImage');
-            if (mainImg) mainImg.src = `/storage/${ad.images[0].image_path}`;
+            if (mainImg) mainImg.src = API.resolveImageUrl(ad.images[0].image_path);
 
             // Thumbnails
             const thumbs = document.getElementById('adThumbnails');
             if (thumbs) {
                 thumbs.innerHTML = ad.images.map((img, i) => `
-                    <div class="ad-thumb ${i === 0 ? 'active' : ''}" onclick="AD_DETAILS.switchImage(${i}, '${'/storage/' + img.image_path}')">
-                        <img src="/storage/${img.image_path}" alt="صورة ${i + 1}" loading="lazy">
+                    <div class="ad-thumb ${i === 0 ? 'active' : ''}" onclick="AD_DETAILS.switchImage(${i}, '${API.resolveImageUrl(img.image_path)}')">
+                        <img src="${API.resolveImageUrl(img.image_path)}" alt="صورة ${i + 1}" loading="lazy">
                     </div>
                 `).join('');
             }
@@ -412,6 +439,39 @@ const AD_DETAILS = {
                         RATING_MODAL.open(ad.user.id);
                     }
                 });
+            }
+        }
+
+        // Owner Actions Logic
+        const ownerActions = document.getElementById('ownerActions');
+        if (ownerActions && AUTH.isLoggedIn()) {
+            const currentUser = AUTH.getUser();
+            const ownerId = ad.user?.id || ad.user_id;
+            
+            // Debugging (Remove in production if needed)
+            console.log('Current User:', currentUser?.id, 'Ad Owner:', ownerId);
+
+            if (currentUser && ownerId && String(currentUser.id) === String(ownerId)) {
+                ownerActions.classList.remove('d-none');
+
+                // Hide usual contact/buy buttons for owner
+                const btnChat = document.getElementById('btnChat');
+                const btnBuyAd = document.getElementById('btnBuyAd');
+                if (btnChat) btnChat.classList.add('d-none');
+                if (btnBuyAd) btnBuyAd.classList.add('d-none');
+
+                // If ad is already sold, update "Mark as Sold" button
+                const btnMarkSold = document.getElementById('btnMarkSold');
+                if (btnMarkSold && ad.status === 'sold') {
+                    btnMarkSold.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> تم البيع';
+                    btnMarkSold.disabled = true;
+                    btnMarkSold.classList.remove('btn-success');
+                    btnMarkSold.classList.add('btn-secondary');
+                }
+            } else {
+                // Not the owner, show buy button if it exists
+                const btnBuyAd = document.getElementById('btnBuyAd');
+                if (btnBuyAd) btnBuyAd.classList.remove('d-none');
             }
         }
 
@@ -535,6 +595,121 @@ const AD_DETAILS = {
         }
         window.location.href = `/web/chat.html?ad_id=${this.adId}`;
     },
+
+    /**
+     * Buy Ad (Create Order)
+     */
+    async buyAd() {
+        if (!AUTH.isLoggedIn()) {
+            window.location.href = '/web/login.html';
+            return;
+        }
+
+        const btn = document.getElementById('btnBuyAd');
+        let originalContent = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري التنفيذ...';
+        btn.disabled = true;
+
+        const result = await API.post('/orders', { ad_id: this.adId });
+
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+
+        if (result.success) {
+            AD_DETAILS.showToast('تم إنشاء الطلب بنجاح. جاري التحويل لصفحة الدفع...', 'success');
+            const orderId = result.data?.order?.id;
+            setTimeout(() => {
+                window.location.href = `order-details.html?id=${orderId}`;
+            }, 1000);
+        } else {
+            const errorMsg = result.message || 'حدث خطأ غير متوقع.';
+            AD_DETAILS.showToast(errorMsg, 'danger');
+            
+            // Re-direct if already has order
+            if (result.data && result.data.order_id) {
+                setTimeout(() => {
+                    window.location.href = `order-details.html?id=${result.data.order_id}`;
+                }, 1500);
+            }
+        }
+    },
+
+    /**
+     * Mark Ad as Sold
+     */
+    async markAsSold() {
+        if (!confirm('هل أنت متأكد من تمييز هذا الإعلان كمباع؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+
+        const btn = document.getElementById('btnMarkSold');
+        UI.toggleBtnLoading(btn, true);
+
+        const result = await API.put(`/ads/${this.adId}`, { status: 'sold' });
+
+        UI.toggleBtnLoading(btn, false);
+
+        if (result.success) {
+            this.showToast('تم تمييز الإعلان كمباع بنجاح.', 'success');
+            
+            // Update button state immediately
+            if (btn) {
+                btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> تم البيع';
+                btn.disabled = true;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-secondary');
+            }
+
+            setTimeout(() => window.location.reload(), 2000);
+        } else {
+            this.showToast(result.message || 'حدث خطأ في تحديث الحالة.', 'danger');
+        }
+    },
+
+    /**
+     * Renew Ad expiry
+     */
+    async renewAd() {
+        const btn = document.getElementById('btnRenewAd');
+        UI.toggleBtnLoading(btn, true);
+
+        const result = await API.post(`/ads/${this.adId}/renew`);
+
+        UI.toggleBtnLoading(btn, false);
+
+        if (result.success) {
+            this.showToast('تم تجديد الإعلان بنجاح لمدة 30 يوماً.', 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            this.showToast(result.message || 'حدث خطأ في تجديد الإعلان.', 'danger');
+        }
+    },
+
+    /**
+     * Soft delete ad
+     */
+    async deleteAd() {
+        if (!confirm('هل أنت متأكد من حذف هذا الإعلان؟ سيتم نقله إلى سلة المحذوفات ويمكنك استعادته من ملفك الشخصي.')) return;
+
+        const btn = document.getElementById('btnDeleteAd');
+        UI.toggleBtnLoading(btn, true);
+
+        const result = await API.delete(`/ads/${this.adId}`);
+
+        UI.toggleBtnLoading(btn, false);
+
+        if (result.success) {
+            this.showToast('تم حذف الإعلان بنجاح.', 'success');
+            setTimeout(() => window.location.href = 'ads.html', 1500);
+        } else {
+            this.showToast(result.message || 'حدث خطأ في حذف الإعلان.', 'danger');
+        }
+    },
+
+    /**
+     * Edit Ad - Redirect to post-ad page with ID
+     */
+    editAd() {
+        window.location.href = `post-ad.html?id=${this.adId}`;
+    },
 };
 
 
@@ -552,8 +727,56 @@ const POST_AD = {
             return;
         }
 
+        const params = new URLSearchParams(window.location.search);
+        this.editId = params.get('id');
+
+        if (this.editId) {
+            this.loadAdForEdit();
+        }
+
         this.loadCategories();
         this.bindEvents();
+    },
+
+    /**
+     * Load existing ad data for editing.
+     */
+    async loadAdForEdit() {
+        // Update UI for Edit Mode
+        const heroTitle = document.querySelector('.post-ad-hero h1');
+        if (heroTitle) heroTitle.textContent = 'تعديل الإعلان';
+        const submitBtn = document.querySelector('#postAdForm button[type="submit"]');
+        if (submitBtn) submitBtn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> حفظ التغييرات';
+
+        const result = await API.get(`/ads/${this.editId}`);
+        if (result.success && result.data) {
+            const ad = result.data;
+            document.getElementById('adTitle').value = ad.title || '';
+            document.getElementById('adDescription').value = ad.description || '';
+            document.getElementById('adPrice').value = ad.price || '';
+            document.getElementById('adAddress').value = ad.address_text || '';
+            document.getElementById('adLat').value = ad.lat || '';
+            document.getElementById('adLng').value = ad.lng || '';
+            document.getElementById('adYear').value = ad.year || '';
+            
+            // Note: images can't be set to <input type="file">, but we could show existing ones
+            if (ad.images && ad.images.length > 0) {
+                const preview = document.getElementById('imagePreview');
+                if (preview) {
+                    preview.innerHTML = ad.images.map(img => `
+                        <div class="image-preview-item">
+                            <img src="${API.resolveImageUrl(img.image_path)}" alt="صورة">
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            // Set category after they are loaded
+            setTimeout(() => {
+                const catSelect = document.getElementById('adCategory');
+                if (catSelect) catSelect.value = ad.category_id || '';
+            }, 500);
+        }
     },
 
     bindEvents() {
@@ -647,10 +870,14 @@ const POST_AD = {
 
         UI.toggleBtnLoading(submitBtn, true);
 
-        // Send as multipart - use raw fetch because API.post sends JSON
+        // Send as multipart - use raw fetch
+        const url = this.editId ? `${API_BASE_URL}/ads/${this.editId}` : `${API_BASE_URL}/ads`;
+        const method = 'POST'; // Keep POST and use _method=PUT for edit (Laravel requirement for files)
+        if (this.editId) formData.append('_method', 'PUT');
+
         try {
-            const response = await fetch(`${API_BASE_URL}/ads`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${AUTH.getToken()}`,
@@ -662,11 +889,15 @@ const POST_AD = {
             UI.toggleBtnLoading(submitBtn, false);
 
             if (result.success) {
-                UI.showAlert('alertContainer', 'تم نشر الإعلان بنجاح! جاري التحويل...', 'success');
+                const isEdit = !!this.editId;
+                const msg = isEdit
+                    ? 'تم تحديث الإعلان بنجاح! جاري التحويل...'
+                    : 'تم إرسال الإعلان بنجاح وهو الآن قيد المراجعة من الإدارة. سيتم نشره بعد الموافقة.';
+                UI.showAlert('alertContainer', msg, 'success');
                 const adId = result.data?.id;
                 setTimeout(() => {
-                    window.location.href = adId ? `ad-details.html?id=${adId}` : 'ads.html';
-                }, 1500);
+                    window.location.href = isEdit && adId ? `ad-details.html?id=${adId}` : 'profile.html';
+                }, 2000);
             } else {
                 // Handle validation errors
                 if (result.errors) {

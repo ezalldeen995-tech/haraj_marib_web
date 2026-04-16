@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             UI.toggleBtnLoading(submitBtn, false);
 
             if (result.success && result.data && result.data.token) {
-                // Save token and redirect to homepage
-                AUTH.saveSession(result.data.token);
+                // Save token and user object, then redirect to homepage
+                AUTH.saveSession(result.data.token, result.data.user);
                 UI.showAlert('alertContainer', 'تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
                 setTimeout(() => {
                     window.location.href = '/web/index.html';

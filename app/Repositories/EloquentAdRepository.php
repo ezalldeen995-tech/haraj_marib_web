@@ -25,7 +25,7 @@ class EloquentAdRepository implements AdRepositoryInterface
 
     public function getFilteredAds(array $filters): LengthAwarePaginator
     {
-        $userId = auth()->id();
+        $userId = auth('api')->id();
 
         $query = Ad::query()
             ->with([
@@ -62,12 +62,42 @@ class EloquentAdRepository implements AdRepositoryInterface
             $query->where('address_text', 'like', "%{$filters['address_text']}%");
         }
 
-        $status = $filters['status'] ?? 'active';
-        $query->where('status', $status);
+        // Filter by user
+        if (isset($filters['my_ads']) && $filters['my_ads'] == 1 && $userId) {
+            $query->where('user_id', $userId);
+        } elseif (isset($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        // Status filter
+        if (isset($filters['my_ads']) && $filters['my_ads'] == 1) {
+            // For "My Ads", default to showing all statuses (active, pending, rejected)
+            // unless a specific status filter is provided.
+            if (isset($filters['status'])) {
+                $query->where('status', $filters['status']);
+            }
+        } else {
+            // Default behavior for public listing/other users: only show 'active' ads
+            $status = $filters['status'] ?? 'active';
+            $query->where('status', $status);
+        }
 
         $sort = $filters['sort'] ?? 'created_at';
-        if (in_array($sort, ['created_at', 'price'])) {
-            $query->orderBy($sort, 'desc');
+        
+        // Map frontend sort values to database columns
+        $sortMap = [
+            'latest' => ['created_at', 'desc'],
+            'oldest' => ['created_at', 'asc'],
+            'created_at' => ['created_at', 'desc'],
+            'price' => ['price', 'desc'],
+            'price_asc' => ['price', 'asc'],
+            'price_desc' => ['price', 'desc'],
+        ];
+
+        if (isset($sortMap[$sort])) {
+            $query->orderBy($sortMap[$sort][0], $sortMap[$sort][1]);
+        } else {
+            $query->orderBy('created_at', 'desc');
         }
 
         return $query->paginate(10);

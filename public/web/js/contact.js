@@ -15,6 +15,8 @@ const CONTACT_PAGE = {
      * Initialize the contact page.
      */
     init() {
+        this.loadContactInfo(); // Fetch and display settings
+
         // Auth check
         if (!AUTH.isLoggedIn()) {
             const container = document.querySelector('.contact-form-card');
@@ -222,6 +224,35 @@ const CONTACT_PAGE = {
                 setTimeout(() => toast.remove(), 300);
             }
         }, 3000);
+    },
+
+    /**
+     * Fetch settings from API and update contact info in the DOM.
+     */
+    async loadContactInfo() {
+        try {
+            const res = await API.get('/settings');
+            if (res && res.success && Array.isArray(res.data)) {
+                res.data.forEach(setting => {
+                    // Update text content
+                    const textEl = document.getElementById(`contact-${setting.key.replace('contact_', '')}`);
+                    if (textEl && setting.value) {
+                        textEl.textContent = setting.value;
+                    }
+
+                    // Update social links
+                    const linkEl = document.getElementById(`link-${setting.key.replace('_url', '')}`);
+                    if (linkEl && setting.value && setting.value !== '#') {
+                        linkEl.href = setting.value;
+                        linkEl.style.display = 'flex'; // Ensure visible if it was hidden
+                    } else if (linkEl && (setting.value === '#' || !setting.value)) {
+                        linkEl.style.display = 'none'; // Hide if no link
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Failed to load contact info settings:", error);
+        }
     },
 };
 

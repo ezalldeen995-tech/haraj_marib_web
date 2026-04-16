@@ -149,10 +149,8 @@ const CHAT = {
             const lastMsg = conv.messages?.[0];
             const unread = conv.unread_count || 0;
             const adTitle = conv.ad?.title || 'إعلان';
-            const adImg = conv.ad?.images?.[0]
-                ? `/storage/${conv.ad.images[0].image_path}`
-                : 'https://placehold.co/48x48/FFEDD5/F97316?text=📦';
-            const avatar = otherUser?.avatar || 'https://placehold.co/48x48/FFEDD5/F97316?text=👤';
+            const adImg = API.resolveImageUrl(conv.ad?.images?.[0]?.image_path, 'https://placehold.co/48x48/FFEDD5/F97316?text=📦');
+            const avatar = API.resolveImageUrl(otherUser?.avatar || otherUser?.avatar_url, 'https://placehold.co/48x48/FFEDD5/F97316?text=👤');
             const timeAgo = lastMsg ? this.timeAgo(lastMsg.created_at) : '';
             const snippet = lastMsg?.content
                 ? (lastMsg.content.length > 40 ? lastMsg.content.substring(0, 40) + '...' : lastMsg.content)
@@ -245,7 +243,7 @@ const CHAT = {
         if (conv) {
             const otherUser = this.getOtherUser(conv);
             document.getElementById('chatHeaderName').textContent = otherUser?.name || 'مستخدم';
-            document.getElementById('chatHeaderAvatar').src = otherUser?.avatar || 'https://placehold.co/40x40/FFEDD5/F97316?text=👤';
+            document.getElementById('chatHeaderAvatar').src = API.resolveImageUrl(otherUser?.avatar || otherUser?.avatar_url, 'https://placehold.co/40x40/FFEDD5/F97316?text=👤');
             document.getElementById('chatHeaderAd').textContent = conv.ad?.title || 'إعلان';
             document.getElementById('chatHeaderAdLink').href = `ad-details.html?id=${conv.ad_id}`;
 

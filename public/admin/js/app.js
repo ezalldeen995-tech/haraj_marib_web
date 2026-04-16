@@ -9,9 +9,12 @@ async function apiRequest(method, endpoint, data = null) {
     try {
         const token = localStorage.getItem('admin_token');
         const headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
         };
+
+        if (!(data instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
+        }
 
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -23,7 +26,7 @@ async function apiRequest(method, endpoint, data = null) {
         };
 
         if (data) {
-            config.body = JSON.stringify(data);
+            config.body = (data instanceof FormData) ? data : JSON.stringify(data);
         }
 
         const response = await fetch(`${BASE_URL}${endpoint}`, config);

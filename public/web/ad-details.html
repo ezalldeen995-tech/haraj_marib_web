@@ -125,9 +125,31 @@
                                     <button class="btn btn-primary flex-grow-1" id="btnChat">
                                         <i class="bi bi-chat-dots me-1"></i> تواصل مع البائع
                                     </button>
+                                    <button class="btn btn-success flex-grow-1 d-none" id="btnBuyAd">
+                                        <i class="bi bi-cart-check me-1"></i> شراء الآن
+                                    </button>
                                     <button class="btn btn-outline-primary" id="btnFavorite">
                                         <i class="bi bi-heart"></i>
                                     </button>
+                                </div>
+
+                                <!-- Owner Actions (Hidden by default) -->
+                                <div id="ownerActions" class="d-none mt-3 p-3 bg-light rounded-3 border">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-gear-fill me-2 text-primary"></i>إدارة الإعلان</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button class="btn btn-success flex-grow-1" id="btnMarkSold">
+                                            <i class="bi bi-check-circle-fill me-1"></i> تأكيد البيع
+                                        </button>
+                                        <button class="btn btn-outline-primary flex-grow-1" id="btnEditAd">
+                                            <i class="bi bi-pencil-square me-1"></i> تعديل
+                                        </button>
+                                        <button class="btn btn-outline-warning flex-grow-1" id="btnRenewAd">
+                                            <i class="bi bi-arrow-clockwise me-1"></i> تجديد
+                                        </button>
+                                        <button class="btn btn-outline-danger flex-grow-1" id="btnDeleteAd">
+                                            <i class="bi bi-trash3 me-1"></i> حذف
+                                        </button>
+                                    </div>
                                 </div>
                                 <!-- Report Button -->
                                 <button class="btn btn-outline-danger btn-sm w-100 d-none" id="btnReportAd">
@@ -303,8 +325,8 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js?v=6"></script>
-    <script src="js/ads.js?v=6"></script>
+    <script src="js/app.js?v=9"></script>
+    <script src="js/ads.js?v=10"></script>
     <script src="js/ratings.js"></script>
     <script src="js/reports.js"></script>
     <script src="js/block.js"></script>

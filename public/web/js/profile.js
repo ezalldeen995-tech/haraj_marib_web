@@ -93,7 +93,8 @@ const PROFILE = {
             this.userData = user;
 
             // Populate header card
-            const avatar = user.avatar || 'https://placehold.co/120x120/FFEDD5/F97316?text=👤';
+            const avatarPath = user.avatar || user.avatar_url;
+            const avatar = API.resolveImageUrl(avatarPath, 'https://placehold.co/120x120/FFEDD5/F97316?text=👤');
             document.getElementById('profileAvatar').src = avatar;
             document.getElementById('sidebarAvatarImg').src = avatar;
             document.getElementById('profileName').textContent = user.name || 'مستخدم';
@@ -247,9 +248,7 @@ const PROFILE = {
             } else {
                 grid.innerHTML = favorites.map(fav => {
                     const ad = fav.ad || fav;
-                    const image = ad.images && ad.images.length > 0
-                        ? `/storage/${ad.images[0].image_path}`
-                        : 'https://placehold.co/300x180/FFEDD5/F97316?text=لا+صورة';
+                    const image = API.resolveImageUrl(ad.images && ad.images.length > 0 ? ad.images[0].image_path : null, 'https://placehold.co/300x180/FFEDD5/F97316?text=لا+صورة');
                     const price = Number(ad.price || 0).toLocaleString('ar-YE');
                     return `
                         <div class="col-md-6 col-lg-4">
@@ -295,9 +294,7 @@ const PROFILE = {
                 `;
             } else {
                 grid.innerHTML = ads.map(ad => {
-                    const image = ad.images && ad.images.length > 0
-                        ? `/storage/${ad.images[0].image_path}`
-                        : 'https://placehold.co/300x180/FFEDD5/F97316?text=لا+صورة';
+                    const image = API.resolveImageUrl(ad.images && ad.images.length > 0 ? ad.images[0].image_path : null, 'https://placehold.co/300x180/FFEDD5/F97316?text=لا+صورة');
                     const price = Number(ad.price || 0).toLocaleString('ar-YE');
                     const statusMap = { active: '🟢 نشط', pending: '🟡 قيد المراجعة', rejected: '🔴 مرفوض', expired: '⚫ منتهي' };
                     const statusText = statusMap[ad.status] || ad.status || '';

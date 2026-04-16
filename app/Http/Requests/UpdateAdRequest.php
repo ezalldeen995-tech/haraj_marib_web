@@ -29,6 +29,7 @@ class UpdateAdRequest extends FormRequest
             'price' => 'sometimes|required|numeric|min:0',
             'category_id' => 'sometimes|required|exists:categories,id',
             'address_text' => 'sometimes|required',
+            'status' => 'sometimes|in:active,pending,sold,expired,rejected',
             'images' => 'sometimes|required|array|max:5',
             'images.*' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
         ];

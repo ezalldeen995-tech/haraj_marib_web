@@ -79,9 +79,7 @@ const FAVORITES_PAGE = {
      * Render a single favorite ad card.
      */
     renderFavCard(ad) {
-        const image = (ad.images && ad.images.length > 0)
-            ? `/storage/${ad.images[0].image_path || ad.images[0]}`
-            : 'https://placehold.co/400x250/FFEDD5/F97316?text=لا+توجد+صورة';
+        const image = API.resolveImageUrl((ad.images && ad.images.length > 0) ? (ad.images[0].image_path || ad.images[0]) : null, 'https://placehold.co/400x250/FFEDD5/F97316?text=لا+توجد+صورة');
         const price = Number(ad.price).toLocaleString('ar-YE');
         const date = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-YE') : '';
 

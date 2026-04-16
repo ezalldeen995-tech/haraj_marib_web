@@ -139,6 +139,7 @@ class AdController extends Controller
 
         if ($user->hasActiveSubscription()) {
             $adData['is_featured'] = true;
+            $adData['status'] = 'active';
         } else {
             $adData['status'] = 'pending';
         }
