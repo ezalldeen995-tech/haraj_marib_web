@@ -32,7 +32,7 @@ class CommentFactory extends Factory
         return [
             'user_id' => \App\Models\User::factory(),
             'ad_id' => \App\Models\Ad::factory(),
-            'content' => fake()->randomElement($this->comments),
+            'content' => $this->faker->randomElement($this->comments),
         ];
     }
 }

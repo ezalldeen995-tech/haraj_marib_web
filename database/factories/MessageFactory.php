@@ -32,8 +32,8 @@ class MessageFactory extends Factory
         return [
             'conversation_id' => \App\Models\Conversation::factory(),
             'sender_id' => \App\Models\User::factory(),
-            'content' => fake()->randomElement($this->messages),
-            'is_read' => fake()->boolean(70),
+            'content' => $this->faker->randomElement($this->messages),
+            'is_read' => $this->faker->boolean(70),
         ];
     }
 }
