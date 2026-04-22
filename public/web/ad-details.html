@@ -37,6 +37,11 @@
                         <a class="nav-link" href="/web/ads.html"><i class="bi bi-megaphone me-1"></i> الإعلانات</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/web/auctions.html">
+                            <i class="bi bi-hammer me-1"></i> المزادات
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/web/contact.html"><i class="bi bi-telephone me-1"></i> تواصل معنا</a>
                     </li>
                 </ul>
@@ -118,6 +123,8 @@
                             <p class="ad-detail-desc" id="adDescription">جاري تحميل التفاصيل...</p>
 
                             <hr>
+
+                            <div id="auctionAppContainer" class="d-none mb-3"></div>
 
                             <div class="mobile-sticky-actions">
                                 <!-- Action Buttons -->
@@ -254,7 +261,7 @@
                     <p class="rating-label mt-2 mb-3" id="ratingLabel">لم يتم التقييم بعد</p>
                     <textarea class="form-control" id="ratingComment" rows="3" placeholder="اكتب تعليقك هنا (اختياري)"
                         maxlength="500"
-                        style="font-family:'Cairo',sans-serif; border-radius:10px; resize:none;"></textarea>
+                        style="font-family:var(--font-body); border-radius:10px; resize:none;"></textarea>
                 </div>
                 <div class="modal-footer" style="border-top:1px solid rgba(0,0,0,0.06);">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -281,7 +288,7 @@
                     <textarea class="form-control" id="reportReason" rows="4"
                         placeholder="سبب الإبلاغ (مثال: احتيال، صور غير مطابقة، محتوى غير لائق...)"
                         maxlength="1000"
-                        style="font-family:'Cairo',sans-serif; border-radius:10px; resize:none;"></textarea>
+                        style="font-family:var(--font-body); border-radius:10px; resize:none;"></textarea>
                     <div class="d-flex justify-content-end mt-1">
                         <small class="text-muted" id="reportCharCount">0 / 1000</small>
                     </div>
@@ -308,7 +315,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="footer-brand"><i class="bi bi-shop me-1"></i> حراج مأرب</div>
-                    <p>سوقك المفتوح في اليمن - للبيع والشراء بأمان وسهولة.</p>
+                    <p>سوقك المفتوح ظپظٹ اليمن - ظ„ظ„بيع ظˆط§ظ„ط´ط±ط§ط، بأمان ظˆط³ظ‡ظˆظ„ط©.</p>
                 </div>
                 <div class="col-md-6 text-md-start">
                     <div class="footer-links mt-3 mt-md-0">
@@ -319,7 +326,7 @@
                 </div>
             </div>
             <hr>
-            <p class="copyright text-center mb-0">© 2026 حراج مأرب. جميع الحقوق محفوظة.</p>
+            <p class="copyright text-center mb-0">آ© 2026 حراج مأرب. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -331,6 +338,8 @@
     <script src="js/reports.js"></script>
     <script src="js/block.js"></script>
     <script src="js/comments.js"></script>
+    <script src="js/auction.js"></script>
 </body>
 
 </html>
+

@@ -157,6 +157,25 @@
                             </div>
                         </div>
 
+                        <!-- Auction Settings -->
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-hammer text-warning me-2"></i> إعدادات المزادات</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold">مدد المزاد المتاحة (بالأيام، مفصولة بفاصلة)</label>
+                                        <div class="input-group">
+                                            <input type="text" id="setting-auction_durations" class="form-control" placeholder="مثال: 1,3,7,14">
+                                            <button class="btn btn-primary" onclick="updateSetting('auction_durations')">حفظ</button>
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">أدخل الأرقام التي تمثل عدد الأيام المسموح بها للمزاد.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Other Settings -->
                         <div class="card shadow-sm border-0 mb-4">
                             <div class="card-header bg-white border-bottom py-3">

@@ -24,6 +24,7 @@ Route::middleware('throttle:auth')->group(function () {
 Route::middleware('throttle:api')->group(function () {
     Route::get('ads', [AdController::class , 'index']);
     Route::get('ads/{id}', [AdController::class , 'show']);
+    Route::get('auctions/{id}', [\App\Http\Controllers\AuctionController::class, 'apiData']);
 
     // Public categories & settings
     Route::get('categories', [\App\Http\Controllers\CategoryController::class , 'index']);
@@ -48,6 +49,9 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
     Route::delete('ads/{id}', [AdController::class , 'destroy']);
     Route::post('ads/{id}/renew', [AdController::class , 'renew']);
     Route::post('ads/{id}/restore', [AdController::class , 'restore']);
+    
+    // Auction routes (protected)
+    Route::post('auctions/{id}/bid', [\App\Http\Controllers\AuctionController::class, 'placeBid']);
 
     // Chat routes (chat send uses stricter limiter)
     Route::post('chat/start', [ChatController::class , 'startOrGetConversation']);
@@ -110,6 +114,7 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
             Route::get('users', [AdminController::class , 'users']);
             Route::post('users/{id}/toggle-block', [AdminController::class , 'toggleBlockUser']);
             Route::get('ads', [AdminController::class , 'allAds']);
+            Route::get('auctions', [AdminController::class , 'allAuctions']);
 
             Route::get('payments/pending', [AdminController::class , 'pendingPayments']);
             Route::post('payments/{id}/approve', [AdminController::class , 'approvePayment']);

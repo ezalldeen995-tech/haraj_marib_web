@@ -37,6 +37,11 @@
                         <a class="nav-link" href="/web/ads.html"><i class="bi bi-megaphone me-1"></i> الإعلانات</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/web/auctions.html">
+                            <i class="bi bi-hammer me-1"></i> المزادات
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/web/chat.html"><i class="bi bi-chat-dots me-1"></i> المحادثات</a>
                     </li>
                 </ul>
@@ -75,8 +80,8 @@
                         </h6>
                         <div class="payment-bank-details">
                             <div class="payment-bank-row">
-                                <span class="payment-bank-label">اسم البنك</span>
-                                <span class="payment-bank-value" id="bankName">بنك اليمن الدولي</span>
+                                <span class="payment-bank-label">ط§ط³ظ… ط§ظ„ط¨ظ†ظƒ</span>
+                                <span class="payment-bank-value" id="bankName">ط¨ظ†ظƒ اليمن ط§ظ„ط¯ظˆظ„ظٹ</span>
                             </div>
                             <div class="payment-bank-row">
                                 <span class="payment-bank-label">اسم صاحب الحساب</span>
@@ -108,7 +113,7 @@
                             <label class="payment-plan-option" data-months="1" data-price="500">
                                 <input type="radio" name="plan" value="1" class="d-none plan-radio">
                                 <div class="payment-plan-inner">
-                                    <div class="payment-plan-duration">شهر واحد</div>
+                                    <div class="payment-plan-duration">ط´ظ‡ط± ظˆط§ط­ط¯</div>
                                     <div class="payment-plan-price">500 <small>ر.ي</small></div>
                                 </div>
                             </label>
@@ -126,16 +131,16 @@
                                 <div class="payment-plan-inner">
                                     <div class="payment-plan-duration">6 أشهر</div>
                                     <div class="payment-plan-price">2,000 <small>ر.ي</small></div>
-                                    <div class="payment-plan-save">وفّر 33%</div>
+                                    <div class="payment-plan-save">ظˆظپظ‘ط± 33%</div>
                                 </div>
                             </label>
                             <label class="payment-plan-option" data-months="12" data-price="3500">
                                 <input type="radio" name="plan" value="12" class="d-none plan-radio">
                                 <div class="payment-plan-inner">
-                                    <div class="payment-plan-badge">أفضل قيمة</div>
+                                    <div class="payment-plan-badge">ط£ظپط¶ظ„ قيمة</div>
                                     <div class="payment-plan-duration">12 شهر</div>
                                     <div class="payment-plan-price">3,500 <small>ر.ي</small></div>
-                                    <div class="payment-plan-save">وفّر 42%</div>
+                                    <div class="payment-plan-save">ظˆظپظ‘ط± 42%</div>
                                 </div>
                             </label>
                         </div>
@@ -154,9 +159,6 @@
                                     </label>
                                     <select class="form-select" id="paymentMonths" required>
                                         <option value="">اختر المدة...</option>
-                                        <option value="1">شهر واحد</option>
-                                        <option value="3">3 أشهر</option>
-                                        <option value="6">6 أشهر</option>
                                         <option value="12">12 شهر</option>
                                     </select>
                                 </div>
@@ -169,20 +171,20 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label fw-semibold">
-                                        <i class="bi bi-image me-1"></i> صورة الإيصال
-                                        <small class="text-muted fw-normal">(JPEG/PNG, حد أقصى 4MB)</small>
+                                        <i class="bi bi-image me-1"></i> صورة ط§ظ„ط¥ظٹطµط§ظ„
+                                        <small class="text-muted fw-normal">(JPEG/PNG, ط­ط¯ أقصى 4MB)</small>
                                     </label>
                                     <div class="payment-upload-area" id="receiptUploadArea">
                                         <i class="bi bi-cloud-arrow-up"></i>
                                         <p class="mb-1">اضغط أو اسحب صورة الإيصال هنا</p>
-                                        <small class="text-muted">صيغ مدعومة: JPEG, PNG — الحد الأقصى: 4
-                                            ميجابايت</small>
+                                        <small class="text-muted">طµظٹط؛ ظ…ط¯ط¹ظˆظ…ط©: JPEG, PNG â€” ط§ظ„ط­ط¯ ط§ظ„أقصى: 4
+                                            ميجاط¨ط§ظٹطھ</small>
                                         <input type="file" class="d-none" id="receiptInput"
                                             accept="image/jpeg,image/png,image/jpg">
                                     </div>
                                     <!-- Preview -->
                                     <div class="payment-receipt-preview d-none" id="receiptPreview">
-                                        <img src="" alt="إيصال" id="receiptPreviewImg">
+                                        <img src="" alt="ط¥ظٹطµط§ظ„" id="receiptPreviewImg">
                                         <button type="button"
                                             class="btn btn-sm btn-outline-danger payment-receipt-remove"
                                             id="removeReceipt">
@@ -242,7 +244,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center p-4">
-                    <img src="" id="receiptModalImg" alt="إيصال" class="img-fluid"
+                    <img src="" id="receiptModalImg" alt="ط¥ظٹطµط§ظ„" class="img-fluid"
                         style="max-height:500px; border-radius:12px;">
                 </div>
             </div>
@@ -268,7 +270,7 @@
                 </div>
             </div>
             <hr>
-            <p class="copyright text-center mb-0">© 2026 حراج مأرب. جميع الحقوق محفوظة.</p>
+            <p class="copyright text-center mb-0">آ© 2026 حراج مأرب. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -279,3 +281,4 @@
 </body>
 
 </html>
+

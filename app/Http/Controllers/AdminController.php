@@ -191,7 +191,7 @@ class AdminController extends Controller
 
     public function allAds(Request $request)
     {
-        $query = \App\Models\Ad::query()->with(['user', 'category', 'images']);
+        $query = \App\Models\Ad::query()->with(['user', 'category', 'images', 'auction']);
 
         if ($request->has('status') && !empty($request->status)) {
             $query->where('status', $request->status);
@@ -266,5 +266,18 @@ class AdminController extends Controller
         ];
 
         return $this->successResponse($data, 'analytics_retrieved');
+    }
+
+    public function allAuctions(Request $request)
+    {
+        $query = \App\Models\Auction::with(['ad', 'bids']);
+
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        $auctions = $query->orderBy('created_at', 'desc')->paginate(20);
+
+        return $this->paginatedResponse($auctions, 'data_retrieved');
     }
 }

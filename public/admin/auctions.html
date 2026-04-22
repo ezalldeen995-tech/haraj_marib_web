@@ -20,8 +20,8 @@
                 <li class="nav-item w-100"><a href="dashboard.html" class="nav-link"><i class="bi bi-speedometer2"></i>الرئيسية</a></li>
                 <li class="nav-item w-100" id="nav-users">
                     <a href="users.html" class="nav-link"><i class="bi bi-people"></i>المستخدمين</a></li>
-                <li class="nav-item w-100"><a href="ads.html" class="nav-link active"><i class="bi bi-megaphone"></i>الإعلانات</a></li>
-                <li class="nav-item w-100"><a href="auctions.html" class="nav-link"><i class="bi bi-hammer"></i>المزادات</a></li>
+                <li class="nav-item w-100"><a href="ads.html" class="nav-link"><i class="bi bi-megaphone"></i>الإعلانات</a></li>
+                <li class="nav-item w-100"><a href="auctions.html" class="nav-link active"><i class="bi bi-hammer"></i>المزادات</a></li>
                 <li class="nav-item w-100"><a href="orders.html" class="nav-link"><i class="bi bi-basket"></i>الطلبات</a></li>
                 <li class="nav-item w-100"><a href="payments.html" class="nav-link"><i class="bi bi-cash-stack"></i>المدفوعات</a></li>
                 <li class="nav-item w-100"><a href="categories.html" class="nav-link"><i class="bi bi-grid"></i>الأقسام</a></li>
@@ -40,7 +40,7 @@
 
         <main class="main-content w-100">
             <header class="topbar">
-                <div class="topbar-left"><h5 class="mb-0 fw-bold">إدارة الإعلانات</h5></div>
+                <div class="topbar-left"><h5 class="mb-0 fw-bold">إدارة المزادات</h5></div>
                 <div class="topbar-right">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle fw-bold d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,58 +58,46 @@
             <div class="container-fluid p-4">
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <h5 class="mb-0 fw-bold"><i class="bi bi-megaphone text-primary me-2"></i> قائمة الإعلانات</h5>
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-hammer text-primary me-2"></i> قائمة المزادات النشطة والمنتهية</h5>
                         <div class="d-flex align-items-center gap-2">
                             <label class="fw-bold text-muted text-nowrap">تصفية حسب الحالة:</label>
-                            <select id="filter-status" class="form-select form-select-sm" onchange="loadAds()">
+                            <select id="filter-status" class="form-select form-select-sm" onchange="loadAuctions()">
                                 <option value="">الكل</option>
                                 <option value="pending" selected>معلق</option>
                                 <option value="active">نشط</option>
-                                <option value="rejected">مرفوض</option>
-                                <option value="sold">مباع</option>
+                                <option value="cancelled">ملغي</option>
                             </select>
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped align-middle mb-0" id="ads-table">
+                        <table class="table table-hover table-striped align-middle mb-0" id="auctions-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>م</th>
-                                    <th>العنوان</th>
-                                    <th>الصورة</th>
-                                    <th>المستخدم</th>
-                                    <th>القسم</th>
+                                    <th>الإعلان المرتبط</th>
+                                    <th>السعر الحالي</th>
+                                    <th>سعر البدء</th>
+                                    <th>المزاودون</th>
+                                    <th>وقت الانتهاء</th>
                                     <th>الحالة</th>
-                                    <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody><tr><td colspan="7" class="text-center py-4 text-muted">جاري التحميل...</td></tr></tbody>
                         </table>
                     </div>
                     <div class="card-footer bg-white border-top-0 py-3">
-                        <div class="d-flex justify-content-center gap-2" id="ads-pagination"></div>
+                        <div class="d-flex justify-content-center gap-2" id="auctions-pagination"></div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Confirm Modal -->
-    <div class="modal fade" id="bsConfirmModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-          <div class="modal-header bg-light border-bottom-0 pb-0"><h5 class="modal-title fw-bold" id="bsConfirmTitle">تأكيد</h5><button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal"></button></div>
-          <div class="modal-body text-center py-4"><i class="bi bi-question-circle text-primary mb-3" style="font-size: 3rem;"></i><p class="fs-5 mb-0" id="bsConfirmMessage">هل أنت متأكد؟</p></div>
-          <div class="modal-footer border-top-0 d-flex justify-content-center pt-0 pb-4"><button type="button" class="btn btn-secondary px-4 ms-2" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-primary px-4" id="bsConfirmBtn">تأكيد</button></div>
-        </div>
-      </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/app.js?v=102"></script>
-    <script src="js/pages.js?v=101"></script>
+    <script src="js/pages.js?v=102"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => { if(typeof loadAds === 'function') loadAds(1); });
+        document.addEventListener('DOMContentLoaded', () => { if(typeof loadAuctions === 'function') loadAuctions(1); });
     </script>
 </body>
 </html>

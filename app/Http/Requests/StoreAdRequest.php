@@ -34,6 +34,11 @@ class StoreAdRequest extends FormRequest
             'year' => ['sometimes', new ValidCarYear()],
             'images' => 'required|array|max:5',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'is_auction' => 'boolean',
+            'start_price' => 'required_if:is_auction,1|numeric|min:0',
+            'min_bid_step' => 'required_if:is_auction,1|numeric|min:0',
+            'buy_it_now_price' => 'nullable|numeric|gte:start_price',
+            'auction_duration' => 'required_if:is_auction,1|integer|in:1,3,7',
         ];
     }
 }

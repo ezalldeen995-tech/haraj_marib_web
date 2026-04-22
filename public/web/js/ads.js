@@ -114,7 +114,12 @@ const ADS_PAGE = {
         // Show loading skeleton
         adsGrid.innerHTML = this.renderSkeletons(6);
 
-        const query = this.buildQueryParams(page);
+        const params = new URLSearchParams(this.buildQueryParams(page));
+        if (window.location.pathname.toLowerCase().includes('auctions.html')) {
+            params.set('is_auction', '1');
+        }
+        const query = params.toString();
+        
         const result = await API.get(`/ads?${query}`);
 
         if (result.success && result.data) {
@@ -128,7 +133,7 @@ const ADS_PAGE = {
                 adsGrid.innerHTML = `
                     <div class="col-12 text-center py-5">
                         <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.4;"></i>
-                        <h5 class="mt-3" style="color: var(--text-secondary);">لا توجد إعلانات</h5>
+                        <h5 class="mt-3" style="color: var(--text-secondary);">لا توجد عناصر لعرضها</h5>
                         <p class="text-muted">جرّب تغيير معايير البحث أو الفلترة</p>
                     </div>
                 `;
@@ -145,7 +150,7 @@ const ADS_PAGE = {
             const resultCount = document.getElementById('resultCount');
             if (resultCount) {
                 const total = result.data.total || ads.length;
-                resultCount.textContent = `${total} إعلان`;
+                resultCount.textContent = `${total} نتيجة`;
             }
         } else {
             adsGrid.innerHTML = `
@@ -163,27 +168,36 @@ const ADS_PAGE = {
      */
     renderAdCard(ad) {
         const image = API.resolveImageUrl(ad.images && ad.images.length > 0 ? ad.images[0].image_path : null, 'https://placehold.co/400x250/FFEDD5/F97316?text=لا+توجد+صورة');
-        const price = Number(ad.price).toLocaleString('ar-YE');
+        
+        let priceTag = `${Number(ad.price).toLocaleString('ar-YE')} ر.ي`;
+        let auctionBadgeHtml = '';
+
+        if (ad.auction) {
+            priceTag = `المزاد: <span class="text-success">${Number(ad.auction.current_price).toLocaleString('ar-YE')}</span> ر.ي`;
+            auctionBadgeHtml = '<div class="position-absolute top-0 end-0 m-2 badge bg-primary px-3 py-2 rounded-pill shadow-sm" style="z-index: 5;"><i class="bi bi-hammer me-1"></i> مزاد</div>';
+        }
+
         const date = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-YE') : '';
-        const isFeatured = ad.is_featured ? '<span class="ad-badge-featured"><i class="bi bi-star-fill"></i> مميز</span>' : '';
+        const isFeatured = ad.is_featured ? '<span class="ad-badge-featured" style="z-index: 5;"><i class="bi bi-star-fill"></i> مميز</span>' : '';
 
         if (this.currentView === 'list') {
             return `
                 <div class="col-12 mb-3 ad-card-animate">
-                    <div class="ad-card ad-card-list d-flex">
+                    <div class="ad-card ad-card-list d-flex position-relative">
+                        ${auctionBadgeHtml}
                         <div class="ad-card-img-list">
                             <img src="${image}" alt="${ad.title}" loading="lazy">
                             ${isFeatured}
                         </div>
                         <div class="ad-card-body flex-grow-1 p-3">
                             <h5 class="ad-card-title">${ad.title}</h5>
-                            <div class="ad-card-price">${price} ر.ي</div>
-                            <div class="ad-card-meta">
+                            <div class="ad-card-price" style="font-size:1.1rem;">${priceTag}</div>
+                            <div class="ad-card-meta mt-2">
                                 <span><i class="bi bi-geo-alt"></i> ${ad.address_text || 'اليمن'}</span>
                                 <span><i class="bi bi-clock"></i> ${date}</span>
                                 <span><i class="bi bi-eye"></i> ${ad.views_count || 0}</span>
                             </div>
-                            <a href="ad-details.html?id=${ad.id}" class="btn btn-outline-primary btn-sm mt-2">عرض التفاصيل</a>
+                            <a href="ad-details.html?id=${ad.id}" class="btn btn-outline-primary btn-sm mt-3 px-4">التفاصيل</a>
                         </div>
                     </div>
                 </div>
@@ -192,22 +206,23 @@ const ADS_PAGE = {
 
         return `
             <div class="col-md-6 col-lg-4 mb-4 ad-card-animate">
-                <div class="ad-card">
+                <div class="ad-card h-100 position-relative">
+                    ${auctionBadgeHtml}
                     <div class="ad-card-img">
                         <img src="${image}" alt="${ad.title}" loading="lazy">
                         ${isFeatured}
                     </div>
-                    <div class="ad-card-body">
+                    <div class="ad-card-body d-flex flex-column">
                         <h5 class="ad-card-title">${ad.title}</h5>
-                        <div class="ad-card-price">${price} ر.ي</div>
-                        <div class="ad-card-meta">
-                            <span><i class="bi bi-geo-alt"></i> ${ad.address_text || 'اليمن'}</span>
-                            <span><i class="bi bi-clock"></i> ${date}</span>
+                        <div class="ad-card-price text-primary fw-bold" style="font-size:1.15rem;">${priceTag}</div>
+                        <div class="ad-card-meta mt-auto pt-3">
+                            <span><i class="bi bi-geo-alt text-muted"></i> <small>${ad.address_text || 'اليمن'}</small></span>
+                            <span class="ms-auto"><i class="bi bi-clock text-muted"></i> <small>${date}</small></span>
                         </div>
                     </div>
-                    <div class="ad-card-footer">
-                        <a href="ad-details.html?id=${ad.id}" class="btn btn-outline-primary btn-sm w-100">
-                            <i class="bi bi-eye me-1"></i> عرض التفاصيل
+                    <div class="ad-card-footer border-top px-3 py-2 bg-light">
+                        <a href="ad-details.html?id=${ad.id}" class="btn btn-sm btn-outline-primary w-100 fw-semibold rounded-pill">
+                            التفاصيل والمشاركة <i class="bi bi-arrow-left-short align-middle fs-5"></i>
                         </a>
                     </div>
                 </div>
@@ -415,6 +430,24 @@ const AD_DETAILS = {
         if (date) date.textContent = ad.created_at ? new Date(ad.created_at).toLocaleDateString('ar-YE') : '';
         if (views) views.textContent = ad.views_count || 0;
         if (category) category.textContent = ad.category?.name || '';
+
+        // AUCTION LOGIC
+        const auctionContainer = document.getElementById('auctionAppContainer');
+        if (auctionContainer && ad.auction) {
+            auctionContainer.classList.remove('d-none');
+            // Hide normal details elements that are substituted by auction
+            if (price) price.closest('.ad-detail-price').classList.add('d-none');
+            const btnBuyAd = document.getElementById('btnBuyAd');
+            if (btnBuyAd) btnBuyAd.closest('button').classList.add('d-none'); // Hide buy button normally
+            
+            // Render template
+            if (typeof window.renderAuctionTemplate === 'function') {
+                auctionContainer.innerHTML = window.renderAuctionTemplate(ad.auction);
+                if (typeof AUCTION_MODULE !== 'undefined') {
+                    AUCTION_MODULE.init(ad.auction.id, ad.auction.end_time);
+                }
+            }
+        }
 
         // User Card
         const userName = document.getElementById('adUserName');
@@ -735,7 +768,34 @@ const POST_AD = {
         }
 
         this.loadCategories();
+        this.loadAuctionDurations();
         this.bindEvents();
+    },
+
+    /**
+     * Load auction duration options from admin settings.
+     */
+    async loadAuctionDurations() {
+        const durationSelect = document.getElementById('adAuctionDuration');
+        if (!durationSelect) return;
+
+        try {
+            const settings = await SETTINGS.load();
+            const durationsStr = settings.auction_durations || '1,3,7,14';
+            const durations = durationsStr.split(',').map(d => d.trim()).filter(d => d);
+
+            if (durations.length > 0) {
+                durationSelect.innerHTML = durations.map(d => {
+                    let label = `${d} يوم`;
+                    if (d == 1) label = '24 ساعة';
+                    else if (d == 7) label = 'أسبوع';
+                    else if (d >= 3 && d <= 10) label = `${d} أيام`;
+                    return `<option value="${d}">${label}</option>`;
+                }).join('');
+            }
+        } catch (error) {
+            console.error("Failed to load auction durations settings:", error);
+        }
     },
 
     /**
@@ -789,6 +849,23 @@ const POST_AD = {
         const imageInput = document.getElementById('adImages');
         if (imageInput) {
             imageInput.addEventListener('change', (e) => this.previewImages(e));
+        }
+
+        // Auction toggle
+        const isAuctionToggle = document.getElementById('adIsAuction');
+        const auctionFields = document.getElementById('auctionFields');
+        if (isAuctionToggle && auctionFields) {
+            isAuctionToggle.addEventListener('change', (e) => {
+                if (e.target.checked) auctionFields.classList.remove('d-none');
+                else auctionFields.classList.add('d-none');
+            });
+
+            // Check query param
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'auction') {
+                isAuctionToggle.checked = true;
+                auctionFields.classList.remove('d-none');
+            }
         }
     },
 
@@ -859,13 +936,24 @@ const POST_AD = {
 
         // Append images
         const imageInput = document.getElementById('adImages');
-        if (imageInput && imageInput.files.length > 0) {
+        if (!this.editId && imageInput && imageInput.files.length === 0) {
+            UI.showAlert('alertContainer', 'يرجى إضافة صورة واحدة على الأقل.', 'danger');
+            return;
+        } else if (imageInput && imageInput.files.length > 0) {
             Array.from(imageInput.files).forEach(file => {
                 formData.append('images[]', file);
             });
-        } else {
-            UI.showAlert('alertContainer', 'يرجى إضافة صورة واحدة على الأقل.', 'danger');
-            return;
+        }
+
+        // Apply auction logic
+        const isAuctionToggle = document.getElementById('adIsAuction');
+        if (isAuctionToggle && isAuctionToggle.checked) {
+            formData.append('is_auction', 1);
+            formData.append('start_price', document.getElementById('adAuctionStartPrice').value || 0);
+            formData.append('min_bid_step', document.getElementById('adAuctionMinStep').value || 50);
+            formData.append('auction_duration', document.getElementById('adAuctionDuration').value || 3);
+            // The logic states: target price is ad.price, which we already appended as 'price'.
+            // No need to send buy_it_now_price unless it's a separate field, but we are using adPrice.
         }
 
         UI.toggleBtnLoading(submitBtn, true);

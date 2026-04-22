@@ -211,6 +211,10 @@ async function loadAds(page = 1) {
             if (ad.status === 'rejected') statusBadge = '<span class="badge rounded-pill bg-danger px-3 py-2">مرفوض</span>';
             if (ad.status === 'sold') statusBadge = '<span class="badge rounded-pill bg-info px-3 py-2 text-dark">مباع</span>';
 
+            if (ad.auction) {
+                statusBadge += ' <span class="badge rounded-pill bg-primary px-3 py-2 ms-1"><i class="bi bi-hammer"></i> مزاد</span>';
+            }
+
             let actions = '';
             if (ad.status === 'pending') {
                 actions += `<button class="btn btn-sm btn-success btn-approve shadow-sm ms-1" data-id="${ad.id}"><i class="bi bi-check-circle" style="pointer-events: none;"></i> قبول</button>`;
@@ -245,6 +249,63 @@ async function loadAds(page = 1) {
     renderPagination('ads-pagination', res.meta, loadAds);
 }
 
+// ==== AUCTIONS LOGIC ====
+let currentPageAuctions = 1;
+async function loadAuctions(page = 1) {
+    currentPageAuctions = page;
+    const statusFilter = document.getElementById('filter-status').value;
+    let url = `/admin/auctions?page=${page}`;
+    if (statusFilter) url += `&status=${statusFilter}`;
+
+    const tbody = document.querySelector('#auctions-table tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Loading...</td></tr>';
+
+    const res = await apiRequest('GET', url);
+
+    if (!res) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">API error or unauthenticated.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = '';
+    const auctions = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+
+    if (auctions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">لا توجد مزادات.</td></tr>';
+    } else {
+        auctions.forEach((auction, index) => {
+            const tr = document.createElement('tr');
+
+            let statusBadge = '<span class="badge rounded-pill bg-success px-3 py-2">نشط</span>';
+            if (auction.status === 'ended') statusBadge = '<span class="badge rounded-pill bg-info px-3 py-2 text-dark">منتهي</span>';
+            if (auction.status === 'cancelled') statusBadge = '<span class="badge rounded-pill bg-danger px-3 py-2">ملغي</span>';
+
+            const adTitle = auction.ad ? auction.ad.title : 'إعلان محذوف';
+            const price = Number(auction.current_price).toLocaleString('ar-YE');
+            const startPrice = Number(auction.start_price).toLocaleString('ar-YE');
+            const bidsCount = auction.bids ? auction.bids.length : 0;
+            const endDate = new Date(auction.end_time).toLocaleString('ar-YE');
+
+            tr.innerHTML = `
+                <td>#${auction.id}</td>
+                <td title="${adTitle}">${adTitle.length > 25 ? adTitle.substring(0, 25) + '...' : adTitle}</td>
+                <td class="text-success fw-bold">${price} ر.ي</td>
+                <td>${startPrice} ر.ي</td>
+                <td><span class="badge bg-secondary">${bidsCount} مزايدات</span></td>
+                <td><small>${endDate}</small></td>
+                <td>${statusBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    if (res.meta) {
+        renderPagination('auctions-pagination', res.meta, loadAuctions);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Event Delegation. Attach one listener to the Table Body.
     const adsTableBody = document.querySelector('#ads-table tbody');
@@ -274,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const adDesc = ad?.description || 'لا يوجد وصف';
 
                 let detailsMsg = `
-                    <div class="text-end mb-3 p-3 bg-light rounded border" style="font-size: 0.95rem;">
-                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-1"></i> تفاصيل الإعلان:</h6>
+                <div class="text-end mb-3 p-3 bg-light rounded border" style="font-size: 0.95rem;">
+                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-1"></i> تفاصيل الإعلان: ${ad?.auction ? '<span class="badge bg-warning text-dark"><i class="bi bi-hammer"></i> مزاد</span>' : ''}</h6>
                         <div class="row mb-2">
                             <div class="col-sm-4 text-muted">اسم الإعلان:</div>
                             <div class="col-sm-8 fw-bold">${adTitle}</div>
@@ -427,7 +488,7 @@ async function loadSettings() {
     const specificKeys = [
         'app_name', 'subscription_price_monthly',
         'contact_email', 'contact_phone', 'contact_location', 'working_hours',
-        'whatsapp_url', 'telegram_url', 'facebook_url', 'twitter_url'
+        'whatsapp_url', 'telegram_url', 'facebook_url', 'twitter_url', 'auction_durations'
     ];
 
     if (res.data.length === 0) {

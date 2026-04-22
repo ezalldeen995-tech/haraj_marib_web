@@ -62,6 +62,16 @@ class EloquentAdRepository implements AdRepositoryInterface
             $query->where('address_text', 'like', "%{$filters['address_text']}%");
         }
 
+        // Filter by auctions
+        if (isset($filters['is_auction']) && ($filters['is_auction'] == 1 || $filters['is_auction'] === 'true')) {
+            $query->whereHas('auction', function($q) {
+                // Ensure the auction itself is active and not expired
+                $q->where('status', 'active')->where('end_time', '>', now());
+            });
+            // We should also load the auction data so UI can show it
+            $query->with('auction');
+        }
+
         // Filter by user
         if (isset($filters['my_ads']) && $filters['my_ads'] == 1 && $userId) {
             $query->where('user_id', $userId);

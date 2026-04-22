@@ -37,7 +37,7 @@ class AdController extends Controller
      */
     public function show($id)
     {
-        $ad = $this->adRepository->findWithRelations($id, ['user', 'category', 'images', 'comments.user']);
+        $ad = $this->adRepository->findWithRelations($id, ['user', 'category', 'images', 'comments.user', 'auction.bids.user']);
 
         $ad->increment('views_count');
 
@@ -123,14 +123,6 @@ class AdController extends Controller
 
         $user = Auth::guard('api')->user();
 
-        // Spam protection: limit free users to 3 ads per day
-        if (!$user->hasActiveSubscription()) {
-            $todayAds = Ad::where('user_id', $user->id)->whereDate('created_at', today())->count();
-            if ($todayAds >= 3) {
-                return $this->errorResponse('daily_limit_reached', 403);
-            }
-        }
-
         $adData = array_merge($data, [
             'user_id' => $user->id,
             'lat' => $data['lat'] ?? 0,
@@ -148,6 +140,19 @@ class AdController extends Controller
         $adData['expires_at'] = now()->addDays(30);
 
         $ad = $this->adRepository->create($adData);
+
+        // handle auction if requested
+        if ($request->boolean('is_auction')) {
+            $auctionData = [
+                'current_price' => $data['start_price'],
+                'start_price' => $data['start_price'],
+                'min_bid_step' => $data['min_bid_step'],
+                'buy_it_now_price' => $data['buy_it_now_price'] ?? null,
+                'end_time' => now()->addDays((int)$data['auction_duration']),
+                'status' => 'active'
+            ];
+            $ad->auction()->create($auctionData);
+        }
 
         // handle images
         if ($request->hasFile('images')) {
