@@ -56,8 +56,8 @@ Route::middleware(['auth:api', 'throttle:api'])->group(function () {
     // Chat routes (chat send uses stricter limiter)
     Route::post('chat/start', [ChatController::class , 'startOrGetConversation']);
     Route::post('chat/send', [ChatController::class , 'sendMessage'])->middleware('throttle:chat');
-    Route::get('chats', [ChatController::class , 'myConversations']);
-    Route::get('chats/{id}/messages', [ChatController::class , 'getMessages']);
+    Route::get('chat/conversations', [ChatController::class , 'myConversations']);
+    Route::get('chat/conversations/{id}/messages', [ChatController::class , 'getMessages']);
 
     // Payment routes
     Route::post('payments/request', [PaymentController::class , 'requestSubscription']);
